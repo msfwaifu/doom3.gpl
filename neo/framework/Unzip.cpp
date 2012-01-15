@@ -1,6 +1,7 @@
 #include "../idlib/precompiled.h"
 #pragma hdrstop
 
+#define _Z_UTIL_H
 #include "Unzip.h"
 
 /* unzip.h -- IO for uncompress .zip files using zlib 
