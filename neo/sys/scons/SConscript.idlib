@@ -9,6 +9,7 @@ Import( 'GLOBALS' )
 Import( GLOBALS )
 
 idlib_string = ' \
+	../framework/zlib/crc32.c \
 	bv/Bounds.cpp \
 	bv/Frustum.cpp \
 	bv/Sphere.cpp \
