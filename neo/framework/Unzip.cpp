@@ -1,7 +1,7 @@
 #include "../idlib/precompiled.h"
 #pragma hdrstop
 
-#define _Z_UTIL_H
+#include "zlib/zutil.h"
 #include "Unzip.h"
 
 /* unzip.h -- IO for uncompress .zip files using zlib 
@@ -46,7 +46,6 @@
 
 
 
-#include "zlib/zutil.h"
 
 int z_verbose = 0;
 
