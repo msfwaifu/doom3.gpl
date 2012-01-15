@@ -1500,34 +1500,7 @@ static const uInt border[] = { /* Order of the bit length code lengths */
         16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15};
 
 #include "zlib/inftrees.h"
-
-
-/* infcodes.h -- header to use infcodes.c
- * Copyright (C) 1995-1998 Mark Adler
- * For conditions of distribution and use, see copyright notice in zlib.h 
- */
-
-/* WARNING: this file should *not* be used by applications. It is
-   part of the implementation of the compression library and is
-   subject to change. Applications should only use zlib.h.
- */
-
-struct inflate_codes_state;
-typedef struct inflate_codes_state inflate_codes_statef;
-
-extern inflate_codes_statef *inflate_codes_new OF((
-    uInt, uInt,
-    inflate_huft *, inflate_huft *,
-    z_streamp ));
-
-extern int inflate_codes OF((
-    inflate_blocks_statef *,
-    z_streamp ,
-    int));
-
-extern void inflate_codes_free OF((
-    inflate_codes_statef *,
-    z_streamp ));
+#include "zlib/infcodes.h"
 
 /* infutil.h -- types and macros common to blocks and codes
  * Copyright (C) 1995-1998 Mark Adler
