@@ -3,15 +3,17 @@
  * For conditions of distribution and use, see copyright notice in zlib.h 
  */
 
-/* @(#) $Id: unzip.c,v 1.2 1999/09/07 20:51:25 zoid Exp $ */
+/* @(#) $Id$ */
 
 #include "zlib.h"
 
+#define local static
+
 #ifdef DYNAMIC_CRC_TABLE
 
-static int crc_table_empty = 1;
-static uLong crc_table[256];
-static void make_crc_table OF((void));
+local int crc_table_empty = 1;
+local uLongf crc_table[256];
+local void make_crc_table OF((void));
 
 /*
   Generate a table for a byte-wise 32-bit CRC calculation on the polynomial:
@@ -37,7 +39,7 @@ static void make_crc_table OF((void));
   the information needed to generate CRC's on data a byte at a time for all
   combinations of CRC register values and incoming bytes.
 */
-static void make_crc_table()
+local void make_crc_table()
 {
   uLong c;
   int n, k;
@@ -63,7 +65,7 @@ static void make_crc_table()
 /* ========================================================================
  * Table of CRC-32's of all single-byte values (made by make_crc_table)
  */
-static const uLong crc_table[256] = {
+local const uLongf crc_table[256] = {
   0x00000000L, 0x77073096L, 0xee0e612cL, 0x990951baL, 0x076dc419L,
   0x706af48fL, 0xe963a535L, 0x9e6495a3L, 0x0edb8832L, 0x79dcb8a4L,
   0xe0d5e91eL, 0x97d2d988L, 0x09b64c2bL, 0x7eb17cbdL, 0xe7b82d07L,
@@ -122,12 +124,12 @@ static const uLong crc_table[256] = {
 /* =========================================================================
  * This function can be used by asm versions of crc32()
  */
-const uLong * get_crc_table()
+const uLongf * ZEXPORT get_crc_table()
 {
 #ifdef DYNAMIC_CRC_TABLE
   if (crc_table_empty) make_crc_table();
 #endif
-  return (const uLong *)crc_table;
+  return (const uLongf *)crc_table;
 }
 
 /* ========================================================================= */
@@ -137,7 +139,10 @@ const uLong * get_crc_table()
 #define DO8(buf)  DO4(buf); DO4(buf);
 
 /* ========================================================================= */
-uLong crc32(uLong crc, const Byte *buf, uInt len)
+uLong ZEXPORT crc32(crc, buf, len)
+    uLong crc;
+    const Bytef *buf;
+    uInt len;
 {
     if (buf == Z_NULL) return 0L;
 #ifdef DYNAMIC_CRC_TABLE
