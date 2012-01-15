@@ -9,7 +9,7 @@
  */
 
 struct inflate_codes_state;
-typedef struct inflate_codes_state inflate_codes_statef;
+typedef struct inflate_codes_state FAR inflate_codes_statef;
 
 extern inflate_codes_statef *inflate_codes_new OF((
     uInt, uInt,
@@ -24,3 +24,4 @@ extern int inflate_codes OF((
 extern void inflate_codes_free OF((
     inflate_codes_statef *,
     z_streamp ));
+
