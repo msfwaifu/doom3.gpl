@@ -1,8 +1,15 @@
+/* inflate_util.c -- data and routines common to blocks and codes
+ * Copyright (C) 1995-1998 Mark Adler
+ * For conditions of distribution and use, see copyright notice in zlib.h 
+ */
+
 #include "zutil.h"
 #include "infblock.h"
 #include "inftrees.h"
 #include "infcodes.h"
 #include "infutil.h"
+
+struct inflate_codes_state {int dummy;}; /* for buggy compilers */
 
 /* And'ing with mask[n] masks the lower n bits */
 uInt inflate_mask[17] = {
@@ -13,17 +20,20 @@ uInt inflate_mask[17] = {
 
 
 /* copy as much as possible from the sliding window to the output area */
-int inflate_flush(inflate_blocks_statef *s, z_streamp z, int r)
+int inflate_flush(s, z, r)
+inflate_blocks_statef *s;
+z_streamp z;
+int r;
 {
   uInt n;
-  Byte *p;
-  Byte *q;
+  Bytef *p;
+  Bytef *q;
 
-  /* static copies of source and destination pointers */
+  /* local copies of source and destination pointers */
   p = z->next_out;
   q = s->read;
 
-  /* compute number of bytes to copy as as end of window */
+  /* compute number of bytes to copy as far as end of window */
   n = (uInt)((q <= s->write ? s->write : s->end) - q);
   if (n > z->avail_out) n = z->avail_out;
   if (n && r == Z_BUF_ERROR) r = Z_OK;
@@ -36,20 +46,8 @@ int inflate_flush(inflate_blocks_statef *s, z_streamp z, int r)
   if (s->checkfn != Z_NULL)
     z->adler = s->check = (*s->checkfn)(s->check, q, n);
 
-  /* copy as as end of window */
-#ifdef MACOS_X // Optimization
-  if (n>64) {
-	zmemcpy(p, q, n);
-  }
-  else {
-	int t1;
-	for (t1=0; t1<n; t1++) {
-		p[t1] = q[t1];
-	}
-  }
-#else
+  /* copy as far as end of window */
   zmemcpy(p, q, n);
-#endif
   p += n;
   q += n;
 
@@ -75,19 +73,7 @@ int inflate_flush(inflate_blocks_statef *s, z_streamp z, int r)
       z->adler = s->check = (*s->checkfn)(s->check, q, n);
 
     /* copy */
-#ifdef MACOS_X // Optimization
-	if (n>64) {
-	  zmemcpy(p, q, n);
-	}
-	else {
-	  int t1;
-	  for (t1=0; t1<n; t1++) {
-		p[t1] = q[t1];
-	  }
-	}
-#else
     zmemcpy(p, q, n);
-#endif
     p += n;
     q += n;
   }
