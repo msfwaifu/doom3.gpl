@@ -1,15 +1,22 @@
+/* infblock.c -- interpret and process block types to last block
+ * Copyright (C) 1995-1998 Mark Adler
+ * For conditions of distribution and use, see copyright notice in zlib.h 
+ */
+
 #include "zutil.h"
 #include "infblock.h"
 #include "inftrees.h"
 #include "infcodes.h"
 #include "infutil.h"
 
+struct inflate_codes_state {int dummy;}; /* for buggy compilers */
+
 /* simplify the use of the inflate_huft type with some defines */
 #define exop word.what.Exop
 #define bits word.what.Bits
 
 /* Table for deflate from PKZIP's appnote.txt. */
-static const uInt border[] = { /* Order of the bit length code lengths */
+local const uInt border[] = { /* Order of the bit length code lengths */
         16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15};
 
 /*
@@ -58,7 +65,10 @@ static const uInt border[] = { /* Order of the bit length code lengths */
  */
 
 
-void inflate_blocks_reset(inflate_blocks_statef *s, z_streamp z, uLong *c)
+void inflate_blocks_reset(s, z, c)
+inflate_blocks_statef *s;
+z_streamp z;
+uLongf *c;
 {
   if (c != Z_NULL)
     *c = s->check;
@@ -71,12 +81,15 @@ void inflate_blocks_reset(inflate_blocks_statef *s, z_streamp z, uLong *c)
   s->bitb = 0;
   s->read = s->write = s->window;
   if (s->checkfn != Z_NULL)
-    z->adler = s->check = (*s->checkfn)(0L, (const Byte *)Z_NULL, 0);
-  Tracev(("inflate:   blocks reset\n"));
+    z->adler = s->check = (*s->checkfn)(0L, (const Bytef *)Z_NULL, 0);
+  Tracev((stderr, "inflate:   blocks reset\n"));
 }
 
 
-inflate_blocks_statef *inflate_blocks_new(z_streamp z, check_func c, uInt w)
+inflate_blocks_statef *inflate_blocks_new(z, c, w)
+z_streamp z;
+check_func c;
+uInt w;
 {
   inflate_blocks_statef *s;
 
@@ -89,7 +102,7 @@ inflate_blocks_statef *inflate_blocks_new(z_streamp z, check_func c, uInt w)
     ZFREE(z, s);
     return Z_NULL;
   }
-  if ((s->window = (Byte *)ZALLOC(z, 1, w)) == Z_NULL)
+  if ((s->window = (Bytef *)ZALLOC(z, 1, w)) == Z_NULL)
   {
     ZFREE(z, s->hufts);
     ZFREE(z, s);
@@ -98,20 +111,23 @@ inflate_blocks_statef *inflate_blocks_new(z_streamp z, check_func c, uInt w)
   s->end = s->window + w;
   s->checkfn = c;
   s->mode = TYPE;
-  Tracev(("inflate:   blocks allocated\n"));
+  Tracev((stderr, "inflate:   blocks allocated\n"));
   inflate_blocks_reset(s, z, Z_NULL);
   return s;
 }
 
 
-int inflate_blocks(inflate_blocks_statef *s, z_streamp z, int r)
+int inflate_blocks(s, z, r)
+inflate_blocks_statef *s;
+z_streamp z;
+int r;
 {
   uInt t;               /* temporary storage */
   uLong b;              /* bit buffer */
   uInt k;               /* bits in bit buffer */
-  Byte *p;             /* input data pointer */
+  Bytef *p;             /* input data pointer */
   uInt n;               /* bytes available there */
-  Byte *q;             /* output window write pointer */
+  Bytef *q;             /* output window write pointer */
   uInt m;               /* bytes to end of window or read pointer */
 
   /* copy input/output information to locals (UPDATE macro restores) */
@@ -127,7 +143,7 @@ int inflate_blocks(inflate_blocks_statef *s, z_streamp z, int r)
       switch (t >> 1)
       {
         case 0:                         /* stored */
-          Tracev(("inflate:     stored block%s\n",
+          Tracev((stderr, "inflate:     stored block%s\n",
                  s->last ? " (last)" : ""));
           DUMPBITS(3)
           t = k & 7;                    /* go to byte boundary */
@@ -135,7 +151,7 @@ int inflate_blocks(inflate_blocks_statef *s, z_streamp z, int r)
           s->mode = LENS;               /* get length of stored block */
           break;
         case 1:                         /* fixed */
-          Tracev(("inflate:     fixed codes block%s\n",
+          Tracev((stderr, "inflate:     fixed codes block%s\n",
                  s->last ? " (last)" : ""));
           {
             uInt bl, bd;
@@ -153,7 +169,7 @@ int inflate_blocks(inflate_blocks_statef *s, z_streamp z, int r)
           s->mode = CODES;
           break;
         case 2:                         /* dynamic */
-          Tracev(("inflate:     dynamic codes block%s\n",
+          Tracev((stderr, "inflate:     dynamic codes block%s\n",
                  s->last ? " (last)" : ""));
           DUMPBITS(3)
           s->mode = TABLE;
@@ -177,7 +193,7 @@ int inflate_blocks(inflate_blocks_statef *s, z_streamp z, int r)
       }
       s->sub.left = (uInt)b & 0xffff;
       b = k = 0;                      /* dump bits */
-      Tracev(("inflate:       stored length %u\n", s->sub.left));
+      Tracev((stderr, "inflate:       stored length %u\n", s->sub.left));
       s->mode = s->sub.left ? STORED : (s->last ? DRY : TYPE);
       break;
     case STORED:
@@ -187,24 +203,12 @@ int inflate_blocks(inflate_blocks_statef *s, z_streamp z, int r)
       t = s->sub.left;
       if (t > n) t = n;
       if (t > m) t = m;
-#ifdef MACOS_X // Optimization
-	  if (t>64) {
-		zmemcpy(q, p, t);
-      }
-	  else {
-		int t1;
-		for (t1=0; t1<t; t1++) {
-			q[t1] = p[t1];
-		}
-	  }
-#else
       zmemcpy(q, p, t);
-#endif
       p += t;  n -= t;
       q += t;  m -= t;
       if ((s->sub.left -= t) != 0)
         break;
-      Tracev(("inflate:       stored end, %lu total out\n",
+      Tracev((stderr, "inflate:       stored end, %lu total out\n",
               z->total_out + (q >= s->read ? q - s->read :
               (s->end - s->read) + (q - s->window))));
       s->mode = s->last ? DRY : TYPE;
@@ -222,14 +226,14 @@ int inflate_blocks(inflate_blocks_statef *s, z_streamp z, int r)
       }
 #endif
       t = 258 + (t & 0x1f) + ((t >> 5) & 0x1f);
-      if ((s->sub.trees.blens = (uInt*)ZALLOC(z, t, sizeof(uInt))) == Z_NULL)
+      if ((s->sub.trees.blens = (uIntf*)ZALLOC(z, t, sizeof(uInt))) == Z_NULL)
       {
         r = Z_MEM_ERROR;
         LEAVE
       }
       DUMPBITS(14)
       s->sub.trees.index = 0;
-      Tracev(("inflate:       table sizes ok\n"));
+      Tracev((stderr, "inflate:       table sizes ok\n"));
       s->mode = BTREE;
     case BTREE:
       while (s->sub.trees.index < 4 + (s->sub.trees.table >> 10))
@@ -252,7 +256,7 @@ int inflate_blocks(inflate_blocks_statef *s, z_streamp z, int r)
         LEAVE
       }
       s->sub.trees.index = 0;
-      Tracev(("inflate:       bits tree ok\n"));
+      Tracev((stderr, "inflate:       bits tree ok\n"));
       s->mode = DTREE;
     case DTREE:
       while (t = s->sub.trees.table,
@@ -317,7 +321,7 @@ int inflate_blocks(inflate_blocks_statef *s, z_streamp z, int r)
           r = t;
           LEAVE
         }
-        Tracev(("inflate:       trees ok\n"));
+        Tracev((stderr, "inflate:       trees ok\n"));
         if ((c = inflate_codes_new(bl, bd, tl, td, z)) == Z_NULL)
         {
           r = Z_MEM_ERROR;
@@ -333,7 +337,7 @@ int inflate_blocks(inflate_blocks_statef *s, z_streamp z, int r)
       r = Z_OK;
       inflate_codes_free(s->sub.decode.codes, z);
       LOAD
-      Tracev(("inflate:       codes end, %lu total out\n",
+      Tracev((stderr, "inflate:       codes end, %lu total out\n",
               z->total_out + (q >= s->read ? q - s->read :
               (s->end - s->read) + (q - s->window))));
       if (!s->last)
@@ -360,18 +364,23 @@ int inflate_blocks(inflate_blocks_statef *s, z_streamp z, int r)
 }
 
 
-int inflate_blocks_free(inflate_blocks_statef *s, z_streamp z)
+int inflate_blocks_free(s, z)
+inflate_blocks_statef *s;
+z_streamp z;
 {
   inflate_blocks_reset(s, z, Z_NULL);
   ZFREE(z, s->window);
   ZFREE(z, s->hufts);
   ZFREE(z, s);
-  Tracev(("inflate:   blocks freed\n"));
+  Tracev((stderr, "inflate:   blocks freed\n"));
   return Z_OK;
 }
 
 
-void inflate_set_dictionary(inflate_blocks_statef *s, const Byte *d, uInt n)
+void inflate_set_dictionary(s, d, n)
+inflate_blocks_statef *s;
+const Bytef *d;
+uInt  n;
 {
   zmemcpy(s->window, d, n);
   s->read = s->write = s->window + n;
@@ -382,7 +391,8 @@ void inflate_set_dictionary(inflate_blocks_statef *s, const Byte *d, uInt n)
  * by Z_SYNC_FLUSH or Z_FULL_FLUSH. 
  * IN assertion: s != Z_NULL
  */
-int inflate_blocks_sync_point(inflate_blocks_statef *s)
+int inflate_blocks_sync_point(s)
+inflate_blocks_statef *s;
 {
   return s->mode == LENS;
 }
