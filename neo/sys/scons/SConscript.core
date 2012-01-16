@@ -153,6 +153,7 @@ framework_string = ' \
 	zlib/inflate.c \
 	zlib/inftrees.c \
 	zlib/infutil.c \
+	zlib/zutil.c \
 	CVarSystem.cpp \
 	CmdSystem.cpp \
 	Common.cpp \

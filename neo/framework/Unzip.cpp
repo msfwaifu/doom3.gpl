@@ -1,9 +1,6 @@
 #include "../idlib/precompiled.h"
 #pragma hdrstop
 
-extern "C" {
-#include "zlib/zutil.h"
-}
 #include "Unzip.h"
 
 /* unzip.h -- IO for uncompress .zip files using zlib 
@@ -1243,21 +1240,4 @@ extern int unzGetGlobalComment (unzFile file, char *szComment, uLong uSizeBuf)
 	if ((szComment != NULL) && (uSizeBuf > s->gi.size_comment))
 		*(szComment+s->gi.size_comment)='\0';
 	return (int)uReadThis;
-}
-
-extern "C"
-{
-
-voidp zcalloc (voidp opaque, unsigned items, unsigned size)
-{
-    if (opaque) items += size - size; /* make compiler happy */
-    return (voidp)calloc(items, size);
-}
-
-void  zcfree (voidp opaque, voidp ptr)
-{
-    free(ptr);
-    if (opaque) return; /* make compiler happy */
-}
-
 }
