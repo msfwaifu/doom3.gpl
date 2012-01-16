@@ -1,1 +1,5 @@
 build
+ipch
+*.sdf
+*.suo
+*.user
