@@ -147,6 +147,7 @@ renderer_list = scons_utils.BuildList( 'renderer', renderer_string )
 
 framework_string = ' \
 	zlib/infblock.c \
+	zlib/inftrees.c \
 	zlib/infutil.c \
 	CVarSystem.cpp \
 	CmdSystem.cpp \
