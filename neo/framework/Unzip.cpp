@@ -1249,6 +1249,7 @@ extern "C" {
 #include "zlib/inftrees.h"
 #include "zlib/infcodes.h"
 #include "zlib/infutil.h"
+#include "zlib/inffast.h"
 
 /* simplify the use of the inflate_huft type with some defines */
 #define exop word.what.Exop
