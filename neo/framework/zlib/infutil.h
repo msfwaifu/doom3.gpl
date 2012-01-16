@@ -36,7 +36,7 @@ struct inflate_blocks_state {
     struct {
       uInt table;               /* table lengths (14 bits) */
       uInt index;               /* index into blens (or border) */
-      uInt *blens;             /* bit lengths of codes */
+      uIntf *blens;             /* bit lengths of codes */
       uInt bb;                  /* bit length tree depth */
       inflate_huft *tb;         /* bit length decoding tree */
     } trees;            /* if DTREE, decoding info for trees */
@@ -51,10 +51,10 @@ struct inflate_blocks_state {
   uInt bitk;            /* bits in bit buffer */
   uLong bitb;           /* bit buffer */
   inflate_huft *hufts;  /* single malloc for tree space */
-  Byte *window;        /* sliding window */
-  Byte *end;           /* one byte after sliding window */
-  Byte *read;          /* window read pointer */
-  Byte *write;         /* window write pointer */
+  Bytef *window;        /* sliding window */
+  Bytef *end;           /* one byte after sliding window */
+  Bytef *read;          /* window read pointer */
+  Bytef *write;         /* window write pointer */
   check_func checkfn;   /* check function */
   uLong check;          /* check on output */
 
@@ -81,7 +81,7 @@ struct inflate_blocks_state {
 #define FLUSH {UPDOUT r=inflate_flush(s,z,r); LOADOUT}
 #define NEEDOUT {if(m==0){WRAP if(m==0){FLUSH WRAP if(m==0) LEAVE}}r=Z_OK;}
 #define OUTBYTE(a) {*q++=(Byte)(a);m--;}
-/*   load static pointers */
+/*   load local pointers */
 #define LOAD {LOADIN LOADOUT}
 
 /* masks for lower bits (size given to avoid silly warnings with Visual C++) */
@@ -92,5 +92,7 @@ extern int inflate_flush OF((
     inflate_blocks_statef *,
     z_streamp ,
     int));
+
+struct internal_state      {int dummy;}; /* for buggy compilers */
 
 #endif
