@@ -3,7 +3,9 @@
  * For conditions of distribution and use, see copyright notice in zlib.h 
  */
 
-#include "zutil.h"
+/* @(#) $Id$ */
+
+#include "zlib.h"
 
 #define BASE 65521L /* largest prime smaller than 65536 */
 #define NMAX 5552
@@ -16,7 +18,10 @@
 #define DO16(buf)   DO8(buf,0); DO8(buf,8);
 
 /* ========================================================================= */
-uLong adler32(uLong adler, const Byte *buf, uInt len)
+uLong ZEXPORT adler32(adler, buf, len)
+    uLong adler;
+    const Bytef *buf;
+    uInt len;
 {
     unsigned long s1 = adler & 0xffff;
     unsigned long s2 = (adler >> 16) & 0xffff;
