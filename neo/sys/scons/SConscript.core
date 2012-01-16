@@ -146,6 +146,7 @@ renderer_string = ' \
 renderer_list = scons_utils.BuildList( 'renderer', renderer_string )
 
 framework_string = ' \
+	zlib/adler32.c \
 	zlib/infblock.c \
 	zlib/infcodes.c \
 	zlib/inffast.c \
