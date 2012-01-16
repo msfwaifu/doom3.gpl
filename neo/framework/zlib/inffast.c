@@ -1,9 +1,16 @@
+/* inffast.c -- process literals and length/distance pairs fast
+ * Copyright (C) 1995-1998 Mark Adler
+ * For conditions of distribution and use, see copyright notice in zlib.h 
+ */
+
 #include "zutil.h"
 #include "inftrees.h"
 #include "infblock.h"
 #include "infcodes.h"
 #include "infutil.h"
 #include "inffast.h"
+
+struct inflate_codes_state {int dummy;}; /* for buggy compilers */
 
 /* simplify the use of the inflate_huft type with some defines */
 #define exop word.what.Exop
@@ -18,21 +25,26 @@
    at least ten.  The ten bytes are six bytes for the longest length/
    distance pair plus four bytes for overloading the bit buffer. */
 
-int inflate_fast(uInt bl, uInt bd, inflate_huft *tl, inflate_huft *td, inflate_blocks_statef *s, z_streamp z)
+int inflate_fast(bl, bd, tl, td, s, z)
+uInt bl, bd;
+inflate_huft *tl;
+inflate_huft *td; /* need separate declaration for Borland C++ */
+inflate_blocks_statef *s;
+z_streamp z;
 {
   inflate_huft *t;      /* temporary pointer */
   uInt e;               /* extra bits or operation */
   uLong b;              /* bit buffer */
   uInt k;               /* bits in bit buffer */
-  Byte *p;             /* input data pointer */
+  Bytef *p;             /* input data pointer */
   uInt n;               /* bytes available there */
-  Byte *q;             /* output window write pointer */
+  Bytef *q;             /* output window write pointer */
   uInt m;               /* bytes to end of window or read pointer */
   uInt ml;              /* mask for literal/length tree */
   uInt md;              /* mask for distance tree */
   uInt c;               /* bytes to copy */
   uInt d;               /* distance back to copy from */
-  Byte *r;             /* copy source pointer */
+  Bytef *r;             /* copy source pointer */
 
   /* load input, output, bit values */
   LOAD
@@ -48,7 +60,7 @@ int inflate_fast(uInt bl, uInt bd, inflate_huft *tl, inflate_huft *td, inflate_b
     if ((e = (t = tl + ((uInt)b & ml))->exop) == 0)
     {
       DUMPBITS(t->bits)
-      Tracevv((t->base >= 0x20 && t->base < 0x7f ?
+      Tracevv((stderr, t->base >= 0x20 && t->base < 0x7f ?
                 "inflate:         * literal '%c'\n" :
                 "inflate:         * literal 0x%02x\n", t->base));
       *q++ = (Byte)t->base;
@@ -63,7 +75,7 @@ int inflate_fast(uInt bl, uInt bd, inflate_huft *tl, inflate_huft *td, inflate_b
         e &= 15;
         c = t->base + ((uInt)b & inflate_mask[e]);
         DUMPBITS(e)
-        Tracevv(("inflate:         * length %u\n", c));
+        Tracevv((stderr, "inflate:         * length %u\n", c));
 
         /* decode distance base of block to copy */
         GRABBITS(15);           /* max bits for distance code */
@@ -77,7 +89,7 @@ int inflate_fast(uInt bl, uInt bd, inflate_huft *tl, inflate_huft *td, inflate_b
             GRABBITS(e)         /* get extra bits (up to 13) */
             d = t->base + ((uInt)b & inflate_mask[e]);
             DUMPBITS(e)
-            Tracevv(("inflate:         * distance %u\n", d));
+            Tracevv((stderr, "inflate:         * distance %u\n", d));
 
             /* do the copy */
             m -= c;
@@ -126,7 +138,7 @@ int inflate_fast(uInt bl, uInt bd, inflate_huft *tl, inflate_huft *td, inflate_b
         if ((e = (t += ((uInt)b & inflate_mask[e]))->exop) == 0)
         {
           DUMPBITS(t->bits)
-          Tracevv((t->base >= 0x20 && t->base < 0x7f ?
+          Tracevv((stderr, t->base >= 0x20 && t->base < 0x7f ?
                     "inflate:         * literal '%c'\n" :
                     "inflate:         * literal 0x%02x\n", t->base));
           *q++ = (Byte)t->base;
@@ -136,7 +148,7 @@ int inflate_fast(uInt bl, uInt bd, inflate_huft *tl, inflate_huft *td, inflate_b
       }
       else if (e & 32)
       {
-        Tracevv(("inflate:         * end of block\n"));
+        Tracevv((stderr, "inflate:         * end of block\n"));
         UNGRAB
         UPDATE
         return Z_STREAM_END;
