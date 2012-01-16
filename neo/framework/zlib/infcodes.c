@@ -56,7 +56,11 @@ struct inflate_codes_state {
 };
 
 
-inflate_codes_statef *inflate_codes_new(uInt bl, uInt bd, inflate_huft *tl, inflate_huft *td, z_streamp z)
+inflate_codes_statef *inflate_codes_new(bl, bd, tl, td, z)
+uInt bl, bd;
+inflate_huft *tl;
+inflate_huft *td; /* need separate declaration for Borland C++ */
+z_streamp z;
 {
   inflate_codes_statef *c;
 
@@ -68,24 +72,27 @@ inflate_codes_statef *inflate_codes_new(uInt bl, uInt bd, inflate_huft *tl, infl
     c->dbits = (Byte)bd;
     c->ltree = tl;
     c->dtree = td;
-    Tracev(("inflate:       codes new\n"));
+    Tracev((stderr, "inflate:       codes new\n"));
   }
   return c;
 }
 
 
-int inflate_codes(inflate_blocks_statef *s, z_streamp z, int r)
+int inflate_codes(s, z, r)
+inflate_blocks_statef *s;
+z_streamp z;
+int r;
 {
   uInt j;               /* temporary storage */
   inflate_huft *t;      /* temporary pointer */
   uInt e;               /* extra bits or operation */
   uLong b;              /* bit buffer */
   uInt k;               /* bits in bit buffer */
-  Byte *p;             /* input data pointer */
+  Bytef *p;             /* input data pointer */
   uInt n;               /* bytes available there */
-  Byte *q;             /* output window write pointer */
+  Bytef *q;             /* output window write pointer */
   uInt m;               /* bytes to end of window or read pointer */
-  Byte *f;             /* pointer to copy strings from */
+  Bytef *f;             /* pointer to copy strings from */
   inflate_codes_statef *c = s->sub.decode.codes;  /* codes state */
 
   /* copy input/output information to locals (UPDATE macro restores) */
@@ -120,7 +127,7 @@ int inflate_codes(inflate_blocks_statef *s, z_streamp z, int r)
       if (e == 0)               /* literal */
       {
         c->sub.lit = t->base;
-        Tracevv((t->base >= 0x20 && t->base < 0x7f ?
+        Tracevv((stderr, t->base >= 0x20 && t->base < 0x7f ?
                  "inflate:         literal '%c'\n" :
                  "inflate:         literal 0x%02x\n", t->base));
         c->mode = LIT;
@@ -141,7 +148,7 @@ int inflate_codes(inflate_blocks_statef *s, z_streamp z, int r)
       }
       if (e & 32)               /* end of block */
       {
-        Tracevv(("inflate:         end of block\n"));
+        Tracevv((stderr, "inflate:         end of block\n"));
         c->mode = WASH;
         break;
       }
@@ -156,7 +163,7 @@ int inflate_codes(inflate_blocks_statef *s, z_streamp z, int r)
       DUMPBITS(j)
       c->sub.code.need = c->dbits;
       c->sub.code.tree = c->dtree;
-      Tracevv(("inflate:         length %u\n", c->len));
+      Tracevv((stderr, "inflate:         length %u\n", c->len));
       c->mode = DIST;
     case DIST:          /* i: get distance next */
       j = c->sub.code.need;
@@ -186,7 +193,7 @@ int inflate_codes(inflate_blocks_statef *s, z_streamp z, int r)
       NEEDBITS(j)
       c->sub.copy.dist += (uInt)b & inflate_mask[j];
       DUMPBITS(j)
-      Tracevv(("inflate:         distance %u\n", c->sub.copy.dist));
+      Tracevv((stderr, "inflate:         distance %u\n", c->sub.copy.dist));
       c->mode = COPY;
     case COPY:          /* o: copying bytes in window, waiting for space */
 #ifndef __TURBOC__ /* Turbo C bug for following expression */
@@ -241,8 +248,10 @@ int inflate_codes(inflate_blocks_statef *s, z_streamp z, int r)
 }
 
 
-void inflate_codes_free(inflate_codes_statef *c, z_streamp z)
+void inflate_codes_free(c, z)
+inflate_codes_statef *c;
+z_streamp z;
 {
   ZFREE(z, c);
-  Tracev(("inflate:       codes free\n"));
+  Tracev((stderr, "inflate:       codes free\n"));
 }
