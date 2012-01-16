@@ -150,6 +150,7 @@ framework_string = ' \
 	zlib/infblock.c \
 	zlib/infcodes.c \
 	zlib/inffast.c \
+	zlib/inflate.c \
 	zlib/inftrees.c \
 	zlib/infutil.c \
 	CVarSystem.cpp \
