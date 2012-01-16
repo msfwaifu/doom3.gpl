@@ -307,12 +307,6 @@ The algorithm is due to Ron Rivest.  This code was
 written by Colin Plumb in 1993, no copyright is claimed.
 This code is in the public domain; do with it what you wish.
 
-CRC32 Checksum
------------------------------------------------------------------------------
-lines	file(s)
-168		neo/idlib/hashing/CRC32.cpp
-Copyright (C) 1995-1998 Mark Adler
-
 OpenGL headers
 ---------------------------------------------------------------------------
 lines	file(s)
