@@ -1246,6 +1246,9 @@ extern int unzGetGlobalComment (unzFile file, char *szComment, uLong uSizeBuf)
 extern "C" {
 
 #include "zlib/infblock.h"
+#include "zlib/inftrees.h"
+#include "zlib/infcodes.h"
+#include "zlib/infutil.h"
 
 /* simplify the use of the inflate_huft type with some defines */
 #define exop word.what.Exop
@@ -1254,10 +1257,6 @@ extern "C" {
 /* Table for deflate from PKZIP's appnote.txt. */
 static const uInt border[] = { /* Order of the bit length code lengths */
         16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15};
-
-#include "zlib/inftrees.h"
-#include "zlib/infcodes.h"
-#include "zlib/infutil.h"
 
 /* And'ing with mask[n] masks the lower n bits */
 uInt inflate_mask[17] = {
@@ -2714,42 +2713,7 @@ uLong adler32(uLong adler, const Byte *buf, uInt len)
 
 /* @(#) $Id: unzip.c,v 1.2 1999/09/07 20:51:25 zoid Exp $ */
 
-/* infblock.h -- header to use infblock.c
- * Copyright (C) 1995-1998 Mark Adler
- * For conditions of distribution and use, see copyright notice in zlib.h 
- */
-
-/* WARNING: this file should *not* be used by applications. It is
-   part of the implementation of the compression library and is
-   subject to change. Applications should only use zlib.h.
- */
-
-extern inflate_blocks_statef * inflate_blocks_new OF((
-    z_streamp z,
-    check_func c,               /* check function */
-    uInt w));                   /* window size */
-
-extern int inflate_blocks OF((
-    inflate_blocks_statef *,
-    z_streamp ,
-    int));                      /* initial return code */
-
-extern void inflate_blocks_reset OF((
-    inflate_blocks_statef *,
-    z_streamp ,
-    uLong *));                  /* check value on output */
-
-extern int inflate_blocks_free OF((
-    inflate_blocks_statef *,
-    z_streamp));
-
-extern void inflate_set_dictionary OF((
-    inflate_blocks_statef *s,
-    const Byte *d,  /* dictionary */
-    uInt  n));       /* dictionary length */
-
-extern int inflate_blocks_sync_point OF((
-    inflate_blocks_statef *s));
+#include "zlib/infblock.h"
 
 typedef enum {
       imMETHOD,   /* waiting for method byte */
