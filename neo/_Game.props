@@ -16,7 +16,8 @@
       <ModuleDefinitionFile>.\game\game.def</ModuleDefinitionFile>
     </Link>
     <PreBuildEvent>
-      <Command>..\build\Win32\"$(Configuration)"\TypeInfo.exe</Command>
+      <Command>cd $(SolutionDir)\..
+"build\Win32\$(Configuration)\TypeInfo.exe"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
 </Project>
