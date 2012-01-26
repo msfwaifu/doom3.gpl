@@ -7,6 +7,42 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		18788F3314D14E7C00BE95E0 /* adler32.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788F2114D14E7C00BE95E0 /* adler32.c */; };
+		18788F3414D14E7C00BE95E0 /* adler32.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788F2114D14E7C00BE95E0 /* adler32.c */; };
+		18788F3514D14E7C00BE95E0 /* crc32.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788F2214D14E7C00BE95E0 /* crc32.c */; };
+		18788F3614D14E7C00BE95E0 /* crc32.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788F2214D14E7C00BE95E0 /* crc32.c */; };
+		18788F3714D14E7C00BE95E0 /* infblock.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788F2314D14E7C00BE95E0 /* infblock.c */; };
+		18788F3814D14E7C00BE95E0 /* infblock.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788F2314D14E7C00BE95E0 /* infblock.c */; };
+		18788F3914D14E7C00BE95E0 /* infblock.h in Headers */ = {isa = PBXBuildFile; fileRef = 18788F2414D14E7C00BE95E0 /* infblock.h */; };
+		18788F3A14D14E7C00BE95E0 /* infblock.h in Headers */ = {isa = PBXBuildFile; fileRef = 18788F2414D14E7C00BE95E0 /* infblock.h */; };
+		18788F3B14D14E7C00BE95E0 /* infcodes.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788F2514D14E7C00BE95E0 /* infcodes.c */; };
+		18788F3C14D14E7C00BE95E0 /* infcodes.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788F2514D14E7C00BE95E0 /* infcodes.c */; };
+		18788F3D14D14E7C00BE95E0 /* infcodes.h in Headers */ = {isa = PBXBuildFile; fileRef = 18788F2614D14E7C00BE95E0 /* infcodes.h */; };
+		18788F3E14D14E7C00BE95E0 /* infcodes.h in Headers */ = {isa = PBXBuildFile; fileRef = 18788F2614D14E7C00BE95E0 /* infcodes.h */; };
+		18788F3F14D14E7C00BE95E0 /* inffast.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788F2714D14E7C00BE95E0 /* inffast.c */; };
+		18788F4014D14E7C00BE95E0 /* inffast.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788F2714D14E7C00BE95E0 /* inffast.c */; };
+		18788F4114D14E7C00BE95E0 /* inffast.h in Headers */ = {isa = PBXBuildFile; fileRef = 18788F2814D14E7C00BE95E0 /* inffast.h */; };
+		18788F4214D14E7C00BE95E0 /* inffast.h in Headers */ = {isa = PBXBuildFile; fileRef = 18788F2814D14E7C00BE95E0 /* inffast.h */; };
+		18788F4314D14E7C00BE95E0 /* inffixed.h in Headers */ = {isa = PBXBuildFile; fileRef = 18788F2914D14E7C00BE95E0 /* inffixed.h */; };
+		18788F4414D14E7C00BE95E0 /* inffixed.h in Headers */ = {isa = PBXBuildFile; fileRef = 18788F2914D14E7C00BE95E0 /* inffixed.h */; };
+		18788F4514D14E7C00BE95E0 /* inflate.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788F2A14D14E7C00BE95E0 /* inflate.c */; };
+		18788F4614D14E7C00BE95E0 /* inflate.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788F2A14D14E7C00BE95E0 /* inflate.c */; };
+		18788F4714D14E7C00BE95E0 /* inftrees.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788F2B14D14E7C00BE95E0 /* inftrees.c */; };
+		18788F4814D14E7C00BE95E0 /* inftrees.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788F2B14D14E7C00BE95E0 /* inftrees.c */; };
+		18788F4914D14E7C00BE95E0 /* inftrees.h in Headers */ = {isa = PBXBuildFile; fileRef = 18788F2C14D14E7C00BE95E0 /* inftrees.h */; };
+		18788F4A14D14E7C00BE95E0 /* inftrees.h in Headers */ = {isa = PBXBuildFile; fileRef = 18788F2C14D14E7C00BE95E0 /* inftrees.h */; };
+		18788F4B14D14E7C00BE95E0 /* infutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788F2D14D14E7C00BE95E0 /* infutil.c */; };
+		18788F4C14D14E7C00BE95E0 /* infutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788F2D14D14E7C00BE95E0 /* infutil.c */; };
+		18788F4D14D14E7C00BE95E0 /* infutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 18788F2E14D14E7C00BE95E0 /* infutil.h */; };
+		18788F4E14D14E7C00BE95E0 /* infutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 18788F2E14D14E7C00BE95E0 /* infutil.h */; };
+		18788F4F14D14E7C00BE95E0 /* zconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 18788F2F14D14E7C00BE95E0 /* zconf.h */; };
+		18788F5014D14E7C00BE95E0 /* zconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 18788F2F14D14E7C00BE95E0 /* zconf.h */; };
+		18788F5114D14E7C00BE95E0 /* zlib.h in Headers */ = {isa = PBXBuildFile; fileRef = 18788F3014D14E7C00BE95E0 /* zlib.h */; };
+		18788F5214D14E7C00BE95E0 /* zlib.h in Headers */ = {isa = PBXBuildFile; fileRef = 18788F3014D14E7C00BE95E0 /* zlib.h */; };
+		18788F5314D14E7C00BE95E0 /* zutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788F3114D14E7C00BE95E0 /* zutil.c */; };
+		18788F5414D14E7C00BE95E0 /* zutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788F3114D14E7C00BE95E0 /* zutil.c */; };
+		18788F5514D14E7C00BE95E0 /* zutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 18788F3214D14E7C00BE95E0 /* zutil.h */; };
+		18788F5614D14E7C00BE95E0 /* zutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 18788F3214D14E7C00BE95E0 /* zutil.h */; };
 		81C857480912AD020095BC33 /* BitMsg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81C857470912AD020095BC33 /* BitMsg.cpp */; };
 		81C857C90912AD0D0095BC33 /* Base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81C8574A0912AD0D0095BC33 /* Base64.cpp */; };
 		81C857CA0912AD0D0095BC33 /* Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = 81C8574B0912AD0D0095BC33 /* Base64.h */; };
@@ -241,11 +277,27 @@
 		81C858C20912AD510095BC33 /* Timer.h in Headers */ = {isa = PBXBuildFile; fileRef = 81C857C60912AD0D0095BC33 /* Timer.h */; };
 		81C858C30912AD510095BC33 /* Token.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81C857C70912AD0D0095BC33 /* Token.cpp */; };
 		81C858C40912AD510095BC33 /* Token.h in Headers */ = {isa = PBXBuildFile; fileRef = 81C857C80912AD0D0095BC33 /* Token.h */; };
-		81C858D90912ADD80095BC33 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C858D80912ADD80095BC33 /* OpenGL.framework */; };
-		81C858DA0912ADD80095BC33 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C858D80912ADD80095BC33 /* OpenGL.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		18788F2114D14E7C00BE95E0 /* adler32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = adler32.c; path = ../../framework/zlib/adler32.c; sourceTree = "<group>"; };
+		18788F2214D14E7C00BE95E0 /* crc32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = crc32.c; path = ../../framework/zlib/crc32.c; sourceTree = "<group>"; };
+		18788F2314D14E7C00BE95E0 /* infblock.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = infblock.c; path = ../../framework/zlib/infblock.c; sourceTree = "<group>"; };
+		18788F2414D14E7C00BE95E0 /* infblock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = infblock.h; path = ../../framework/zlib/infblock.h; sourceTree = "<group>"; };
+		18788F2514D14E7C00BE95E0 /* infcodes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = infcodes.c; path = ../../framework/zlib/infcodes.c; sourceTree = "<group>"; };
+		18788F2614D14E7C00BE95E0 /* infcodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = infcodes.h; path = ../../framework/zlib/infcodes.h; sourceTree = "<group>"; };
+		18788F2714D14E7C00BE95E0 /* inffast.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = inffast.c; path = ../../framework/zlib/inffast.c; sourceTree = "<group>"; };
+		18788F2814D14E7C00BE95E0 /* inffast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = inffast.h; path = ../../framework/zlib/inffast.h; sourceTree = "<group>"; };
+		18788F2914D14E7C00BE95E0 /* inffixed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = inffixed.h; path = ../../framework/zlib/inffixed.h; sourceTree = "<group>"; };
+		18788F2A14D14E7C00BE95E0 /* inflate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = inflate.c; path = ../../framework/zlib/inflate.c; sourceTree = "<group>"; };
+		18788F2B14D14E7C00BE95E0 /* inftrees.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = inftrees.c; path = ../../framework/zlib/inftrees.c; sourceTree = "<group>"; };
+		18788F2C14D14E7C00BE95E0 /* inftrees.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = inftrees.h; path = ../../framework/zlib/inftrees.h; sourceTree = "<group>"; };
+		18788F2D14D14E7C00BE95E0 /* infutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = infutil.c; path = ../../framework/zlib/infutil.c; sourceTree = "<group>"; };
+		18788F2E14D14E7C00BE95E0 /* infutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = infutil.h; path = ../../framework/zlib/infutil.h; sourceTree = "<group>"; };
+		18788F2F14D14E7C00BE95E0 /* zconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zconf.h; path = ../../framework/zlib/zconf.h; sourceTree = "<group>"; };
+		18788F3014D14E7C00BE95E0 /* zlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zlib.h; path = ../../framework/zlib/zlib.h; sourceTree = "<group>"; };
+		18788F3114D14E7C00BE95E0 /* zutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = zutil.c; path = ../../framework/zlib/zutil.c; sourceTree = "<group>"; };
+		18788F3214D14E7C00BE95E0 /* zutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zutil.h; path = ../../framework/zlib/zutil.h; sourceTree = "<group>"; };
 		81C857470912AD020095BC33 /* BitMsg.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = BitMsg.cpp; path = ../../idlib/BitMsg.cpp; sourceTree = SOURCE_ROOT; };
 		81C8574A0912AD0D0095BC33 /* Base64.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Base64.cpp; path = ../../idlib/Base64.cpp; sourceTree = SOURCE_ROOT; };
 		81C8574B0912AD0D0095BC33 /* Base64.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Base64.h; path = ../../idlib/Base64.h; sourceTree = SOURCE_ROOT; };
@@ -364,7 +416,6 @@
 		81C857C70912AD0D0095BC33 /* Token.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Token.cpp; path = ../../idlib/Token.cpp; sourceTree = SOURCE_ROOT; };
 		81C857C80912AD0D0095BC33 /* Token.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Token.h; path = ../../idlib/Token.h; sourceTree = SOURCE_ROOT; };
 		81C858490912AD370095BC33 /* libidlib_nopic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libidlib_nopic.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		81C858D80912ADD80095BC33 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		D2AAC046055464E500DB518D /* libidlib_pic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libidlib_pic.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -373,7 +424,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				81C858DA0912ADD80095BC33 /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,7 +431,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				81C858D90912ADD80095BC33 /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -393,7 +442,6 @@
 			children = (
 				08FB7795FE84155DC02AAC07 /* Source */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
-				81C858D80912ADD80095BC33 /* OpenGL.framework */,
 			);
 			name = idlib;
 			sourceTree = "<group>";
@@ -401,6 +449,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				18788F5714D14E8E00BE95E0 /* zlib */,
 				81C857470912AD020095BC33 /* BitMsg.cpp */,
 				81C8574A0912AD0D0095BC33 /* Base64.cpp */,
 				81C8574B0912AD0D0095BC33 /* Base64.h */,
@@ -435,6 +484,31 @@
 				81C857C80912AD0D0095BC33 /* Token.h */,
 			);
 			name = Source;
+			sourceTree = "<group>";
+		};
+		18788F5714D14E8E00BE95E0 /* zlib */ = {
+			isa = PBXGroup;
+			children = (
+				18788F2114D14E7C00BE95E0 /* adler32.c */,
+				18788F2214D14E7C00BE95E0 /* crc32.c */,
+				18788F2314D14E7C00BE95E0 /* infblock.c */,
+				18788F2414D14E7C00BE95E0 /* infblock.h */,
+				18788F2514D14E7C00BE95E0 /* infcodes.c */,
+				18788F2614D14E7C00BE95E0 /* infcodes.h */,
+				18788F2714D14E7C00BE95E0 /* inffast.c */,
+				18788F2814D14E7C00BE95E0 /* inffast.h */,
+				18788F2914D14E7C00BE95E0 /* inffixed.h */,
+				18788F2A14D14E7C00BE95E0 /* inflate.c */,
+				18788F2B14D14E7C00BE95E0 /* inftrees.c */,
+				18788F2C14D14E7C00BE95E0 /* inftrees.h */,
+				18788F2D14D14E7C00BE95E0 /* infutil.c */,
+				18788F2E14D14E7C00BE95E0 /* infutil.h */,
+				18788F2F14D14E7C00BE95E0 /* zconf.h */,
+				18788F3014D14E7C00BE95E0 /* zlib.h */,
+				18788F3114D14E7C00BE95E0 /* zutil.c */,
+				18788F3214D14E7C00BE95E0 /* zutil.h */,
+			);
+			name = zlib;
 			sourceTree = "<group>";
 		};
 		1AB674ADFE9D54B511CA2CBB /* Products */ = {
@@ -650,6 +724,15 @@
 				81C858C00912AD510095BC33 /* Str.h in Headers */,
 				81C858C20912AD510095BC33 /* Timer.h in Headers */,
 				81C858C40912AD510095BC33 /* Token.h in Headers */,
+				18788F3A14D14E7C00BE95E0 /* infblock.h in Headers */,
+				18788F3E14D14E7C00BE95E0 /* infcodes.h in Headers */,
+				18788F4214D14E7C00BE95E0 /* inffast.h in Headers */,
+				18788F4414D14E7C00BE95E0 /* inffixed.h in Headers */,
+				18788F4A14D14E7C00BE95E0 /* inftrees.h in Headers */,
+				18788F4E14D14E7C00BE95E0 /* infutil.h in Headers */,
+				18788F5014D14E7C00BE95E0 /* zconf.h in Headers */,
+				18788F5214D14E7C00BE95E0 /* zlib.h in Headers */,
+				18788F5614D14E7C00BE95E0 /* zutil.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -724,6 +807,15 @@
 				81C8583E0912AD0D0095BC33 /* Str.h in Headers */,
 				81C858400912AD0D0095BC33 /* Timer.h in Headers */,
 				81C858420912AD0D0095BC33 /* Token.h in Headers */,
+				18788F3914D14E7C00BE95E0 /* infblock.h in Headers */,
+				18788F3D14D14E7C00BE95E0 /* infcodes.h in Headers */,
+				18788F4114D14E7C00BE95E0 /* inffast.h in Headers */,
+				18788F4314D14E7C00BE95E0 /* inffixed.h in Headers */,
+				18788F4914D14E7C00BE95E0 /* inftrees.h in Headers */,
+				18788F4D14D14E7C00BE95E0 /* infutil.h in Headers */,
+				18788F4F14D14E7C00BE95E0 /* zconf.h in Headers */,
+				18788F5114D14E7C00BE95E0 /* zlib.h in Headers */,
+				18788F5514D14E7C00BE95E0 /* zutil.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -848,6 +940,15 @@
 				81C858BF0912AD510095BC33 /* Str.cpp in Sources */,
 				81C858C10912AD510095BC33 /* Timer.cpp in Sources */,
 				81C858C30912AD510095BC33 /* Token.cpp in Sources */,
+				18788F3414D14E7C00BE95E0 /* adler32.c in Sources */,
+				18788F3614D14E7C00BE95E0 /* crc32.c in Sources */,
+				18788F3814D14E7C00BE95E0 /* infblock.c in Sources */,
+				18788F3C14D14E7C00BE95E0 /* infcodes.c in Sources */,
+				18788F4014D14E7C00BE95E0 /* inffast.c in Sources */,
+				18788F4614D14E7C00BE95E0 /* inflate.c in Sources */,
+				18788F4814D14E7C00BE95E0 /* inftrees.c in Sources */,
+				18788F4C14D14E7C00BE95E0 /* infutil.c in Sources */,
+				18788F5414D14E7C00BE95E0 /* zutil.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -905,6 +1006,15 @@
 				81C8583D0912AD0D0095BC33 /* Str.cpp in Sources */,
 				81C8583F0912AD0D0095BC33 /* Timer.cpp in Sources */,
 				81C858410912AD0D0095BC33 /* Token.cpp in Sources */,
+				18788F3314D14E7C00BE95E0 /* adler32.c in Sources */,
+				18788F3514D14E7C00BE95E0 /* crc32.c in Sources */,
+				18788F3714D14E7C00BE95E0 /* infblock.c in Sources */,
+				18788F3B14D14E7C00BE95E0 /* infcodes.c in Sources */,
+				18788F3F14D14E7C00BE95E0 /* inffast.c in Sources */,
+				18788F4514D14E7C00BE95E0 /* inflate.c in Sources */,
+				18788F4714D14E7C00BE95E0 /* inftrees.c in Sources */,
+				18788F4B14D14E7C00BE95E0 /* infutil.c in Sources */,
+				18788F5314D14E7C00BE95E0 /* zutil.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
