@@ -978,13 +978,13 @@
 					"$(MAIN_CPP_DEFINES)",
 					MACOS_X,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MAIN_CPP_DEFINES = _DEBUG;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-fpermissive",
 				);
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx10.6;
 				USE_SEPARATE_HEADERMAPS = YES;
 				VALID_ARCHS = i386;
 			};
@@ -1003,12 +1003,12 @@
 					"$(MAIN_CPP_DEFINES)",
 					MACOS_X,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-fpermissive",
 				);
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx10.6;
 				USE_SEPARATE_HEADERMAPS = YES;
 				VALID_ARCHS = i386;
 			};
