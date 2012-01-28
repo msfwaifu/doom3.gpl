@@ -409,9 +409,9 @@ static bool CreateGameWindow(  glimpParms_t parms ) {
 #endif
 
 	// Store off the pixel format attributes that we actually got
-	[pixelFormat getValues: (long *) &glConfig.colorBits forAttribute: NSOpenGLPFAColorSize forVirtualScreen: 0];
-	[pixelFormat getValues: (long *) &glConfig.depthBits forAttribute: NSOpenGLPFADepthSize forVirtualScreen: 0];
-	[pixelFormat getValues: (long *) &glConfig.stencilBits forAttribute: NSOpenGLPFAStencilSize forVirtualScreen: 0];
+	[pixelFormat getValues: &glConfig.colorBits forAttribute: NSOpenGLPFAColorSize forVirtualScreen: 0];
+	[pixelFormat getValues: &glConfig.depthBits forAttribute: NSOpenGLPFADepthSize forVirtualScreen: 0];
+	[pixelFormat getValues: &glConfig.stencilBits forAttribute: NSOpenGLPFAStencilSize forVirtualScreen: 0];
 
 	glConfig.displayFrequency = [[glw_state.gameMode objectForKey: (id)kCGDisplayRefreshRate] intValue];
     
@@ -1258,50 +1258,52 @@ void GLW_InitExtensions( void ) { }
 #define MAX_RENDERER_INFO_COUNT 128
 
 // Returns zero if there are no hardware renderers.  Otherwise, returns the max memory across all renderers (on the presumption that the screen that we'll use has the most memory).
-unsigned long Sys_QueryVideoMemory() {
-	CGLError err;
-	CGLRendererInfoObj rendererInfo, rendererInfos[MAX_RENDERER_INFO_COUNT];
-	long rendererInfoIndex, rendererInfoCount = MAX_RENDERER_INFO_COUNT;
-	long rendererIndex, rendererCount;
-	long maxVRAM = 0, vram = 0;
-	long accelerated;
-	long rendererID;
-	long totalRenderers = 0;
-    
-	err = CGLQueryRendererInfo(CGDisplayIDToOpenGLDisplayMask(Sys_DisplayToUse()), rendererInfos, &rendererInfoCount);
-	if (err) {
+unsigned long Sys_QueryVideoMemory()
+{
+	CGLRendererInfoObj rendererInfos[MAX_RENDERER_INFO_COUNT];
+	GLint rendererInfoCount = MAX_RENDERER_INFO_COUNT;
+	CGLError err = CGLQueryRendererInfo(CGDisplayIDToOpenGLDisplayMask(Sys_DisplayToUse()), rendererInfos, &rendererInfoCount);
+	if (err)
+    {
 		common->Printf("CGLQueryRendererInfo -> %d\n", err);
-		return vram;
+		return 0;
 	}
     
+	GLint maxVRAM = 0;
+	GLint totalRenderers = 0;
 	//common->Printf("rendererInfoCount = %d\n", rendererInfoCount);
-	for (rendererInfoIndex = 0; rendererInfoIndex < rendererInfoCount && totalRenderers < rendererInfoCount; rendererInfoIndex++) {
-		rendererInfo = rendererInfos[rendererInfoIndex];
+	for (GLint rendererInfoIndex = 0; rendererInfoIndex < rendererInfoCount && totalRenderers < rendererInfoCount; rendererInfoIndex++)
+    {
+		CGLRendererInfoObj rendererInfo = rendererInfos[rendererInfoIndex];
 		//common->Printf("rendererInfo: 0x%08x\n", rendererInfo);
         
-
+        GLint rendererCount;
 		err = CGLDescribeRenderer(rendererInfo, 0, kCGLRPRendererCount, &rendererCount);
-		if (err) {
+		if (err)
+        {
 			common->Printf("CGLDescribeRenderer(kCGLRPRendererID) -> %d\n", err);
 			continue;
 		}
 		//common->Printf("  rendererCount: %d\n", rendererCount);
 
-		for (rendererIndex = 0; rendererIndex < rendererCount; rendererIndex++) {
+		for (GLint rendererIndex = 0; rendererIndex < rendererCount; rendererIndex++)
+        {
 			totalRenderers++;
 			//common->Printf("  rendererIndex: %d\n", rendererIndex);
             
-			rendererID = 0xffffffff;
+            GLint rendererID = 0xffffffff;
 			err = CGLDescribeRenderer(rendererInfo, rendererIndex, kCGLRPRendererID, &rendererID);
-			if (err) {
+			if (err)
+            {
 				common->Printf("CGLDescribeRenderer(kCGLRPRendererID) -> %d\n", err);
 				continue;
 			}
 			//common->Printf("    rendererID: 0x%08x\n", rendererID);
             
-			accelerated = 0;
+			GLint accelerated = 0;
 			err = CGLDescribeRenderer(rendererInfo, rendererIndex, kCGLRPAccelerated, &accelerated);
-			if (err) {
+			if (err)
+            {
 				common->Printf("CGLDescribeRenderer(kCGLRPAccelerated) -> %d\n", err);
 				continue;
 			}
@@ -1309,9 +1311,10 @@ unsigned long Sys_QueryVideoMemory() {
 			if (!accelerated)
 				continue;
             
-			vram = 0;
+			GLint vram = 0;
 			err = CGLDescribeRenderer(rendererInfo, rendererIndex, kCGLRPVideoMemory, &vram);
-			if (err) {
+			if (err)
+            {
 				common->Printf("CGLDescribeRenderer -> %d\n", err);
 				continue;
 			}
@@ -1324,7 +1327,8 @@ unsigned long Sys_QueryVideoMemory() {
         
 #if 0
 		err = CGLDestroyRendererInfo(rendererInfo);
-		if (err) {
+		if (err)
+        {
 			common->Printf("CGLDestroyRendererInfo -> %d\n", err);
 		}
 #endif
