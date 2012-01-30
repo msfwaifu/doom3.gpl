@@ -12,6 +12,7 @@
     <Link>
       <OutputFile>$(OutDir)gamex86.dll</OutputFile>
       <ModuleDefinitionFile>.\d3xp\game.def</ModuleDefinitionFile>
+      <AdditionalDependencies>zlibwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>cd $(SolutionDir)\..

@@ -14,6 +14,7 @@
     <Link>
       <OutputFile>$(OutDir)gamex86.dll</OutputFile>
       <ModuleDefinitionFile>.\game\game.def</ModuleDefinitionFile>
+      <AdditionalDependencies>zlibwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>cd $(SolutionDir)\..

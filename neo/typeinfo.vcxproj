@@ -182,9 +182,6 @@
       <Project>{49bec5c6-b964-417a-851e-808886b57400}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="zlib.vcxproj">
-      <Project>{a0c4e4b2-35a6-4de3-8194-daeaa48f0a9e}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
