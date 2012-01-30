@@ -146,14 +146,6 @@ renderer_string = ' \
 renderer_list = scons_utils.BuildList( 'renderer', renderer_string )
 
 framework_string = ' \
-	zlib/adler32.c \
-	zlib/infblock.c \
-	zlib/infcodes.c \
-	zlib/inffast.c \
-	zlib/inflate.c \
-	zlib/inftrees.c \
-	zlib/infutil.c \
-	zlib/zutil.c \
 	CVarSystem.cpp \
 	CmdSystem.cpp \
 	Common.cpp \
@@ -344,7 +336,7 @@ else:
 	sound_env.Append( CPPDEFINES = 'NO_ALSA' )
 sound_lib = sound_env.StaticLibrary( 'sound', sound_list )
 
-local_env.Append( LIBS = [ 'pthread', 'dl' ] )
+local_env.Append( LIBS = [ 'pthread', 'dl', 'z' ] )
 if ( local_dedicated == 0 ):
 	local_env.Append( LIBS = [ 'X11', 'Xext', 'Xxf86vm' ] ) # 'Xxf86dga', 
 	local_env.Append( LIBPATH = [ '/usr/X11R6/lib' ] )
