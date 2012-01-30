@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		188421B114D72DD40073189E /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 188421B014D72DD40073189E /* libz.dylib */; };
 		81225A3A0912C3DB005D34B9 /* libidlib_pic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 81225A210912C3A4005D34B9 /* libidlib_pic.a */; };
 		81225AC40912C42F005D34B9 /* PlayerIcon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81225A3B0912C42F005D34B9 /* PlayerIcon.cpp */; };
 		81225AC50912C42F005D34B9 /* Actor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81225A3C0912C42F005D34B9 /* Actor.cpp */; };
@@ -166,6 +167,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		188421B014D72DD40073189E /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		81225A1B0912C3A4005D34B9 /* idlib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = idlib.xcodeproj; sourceTree = "<group>"; };
 		81225A3B0912C42F005D34B9 /* PlayerIcon.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PlayerIcon.cpp; path = ../../game/PlayerIcon.cpp; sourceTree = SOURCE_ROOT; };
 		81225A3C0912C42F005D34B9 /* Actor.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Actor.cpp; path = ../../game/Actor.cpp; sourceTree = SOURCE_ROOT; };
@@ -307,6 +309,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				188421B114D72DD40073189E /* libz.dylib in Frameworks */,
 				81225A3A0912C3DB005D34B9 /* libidlib_pic.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -317,6 +320,7 @@
 		08FB7794FE84155DC02AAC07 /* game */ = {
 			isa = PBXGroup;
 			children = (
+				188421B014D72DD40073189E /* libz.dylib */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 				81225A1B0912C3A4005D34B9 /* idlib.xcodeproj */,

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		188421B314D72E260073189E /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 188421B214D72E260073189E /* libz.dylib */; };
 		25ACE0660B31FDED00A159B2 /* Grabber.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 25ACE0650B31FDED00A159B2 /* Grabber.cpp */; };
 		25ACE0680B31FDFE00A159B2 /* Force_Grab.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 25ACE0670B31FDFE00A159B2 /* Force_Grab.cpp */; };
 		81225A3A0912C3DB005D34B9 /* libidlib_pic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 81225A210912C3A4005D34B9 /* libidlib_pic.a */; };
@@ -168,6 +169,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		188421B214D72E260073189E /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		25ACE0650B31FDED00A159B2 /* Grabber.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Grabber.cpp; path = ../../d3xp/Grabber.cpp; sourceTree = SOURCE_ROOT; };
 		25ACE0670B31FDFE00A159B2 /* Force_Grab.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Force_Grab.cpp; sourceTree = "<group>"; };
 		81225A1B0912C3A4005D34B9 /* idlib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = idlib.xcodeproj; sourceTree = "<group>"; };
@@ -311,6 +313,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				188421B314D72E260073189E /* libz.dylib in Frameworks */,
 				81225A3A0912C3DB005D34B9 /* libidlib_pic.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -321,6 +324,7 @@
 		08FB7794FE84155DC02AAC07 /* game */ = {
 			isa = PBXGroup;
 			children = (
+				188421B214D72E260073189E /* libz.dylib */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 				81225A1B0912C3A4005D34B9 /* idlib.xcodeproj */,

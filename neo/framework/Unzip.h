@@ -87,7 +87,7 @@ typedef struct unz_file_info_internal_s
     unsigned long offset_curfile;/* relative offset of static header 4 unsigned chars */
 } unz_file_info_internal;
 
-#include "zlib/zlib.h"
+#include <zlib.h>
 
 /* file_in_zip_read_info_s contain internal information about a file in zipfile,
     when reading and decompress it */

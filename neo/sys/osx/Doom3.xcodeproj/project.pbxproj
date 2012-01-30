@@ -11,6 +11,7 @@
 		184E8B9B14D4295F00ACADDE /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 184E8B9A14D4295F00ACADDE /* OpenGL.framework */; };
 		184E8B9D14D4296900ACADDE /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 184E8B9C14D4296900ACADDE /* Carbon.framework */; };
 		184E8B9F14D4298400ACADDE /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 184E8B9E14D4298400ACADDE /* IOKit.framework */; };
+		188421B714D72E380073189E /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 188421B614D72E380073189E /* libz.dylib */; };
 		812258110912BC79005D34B9 /* snd_efxfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8122565F0912BC78005D34B9 /* snd_efxfile.cpp */; };
 		812258120912BC79005D34B9 /* GEWindowWrapper_stub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 812256620912BC78005D34B9 /* GEWindowWrapper_stub.cpp */; };
 		812258130912BC79005D34B9 /* edit_stub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 812256630912BC79005D34B9 /* edit_stub.cpp */; };
@@ -320,10 +321,7 @@
 		184E8B9A14D4295F00ACADDE /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		184E8B9C14D4296900ACADDE /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		184E8B9E14D4298400ACADDE /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
-		18F66C3C14D428BC00B8101F /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
-		18F66C3E14D428CE00B8101F /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
-		18F66C4014D428DC00B8101F /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
-		18F66C4214D428EF00B8101F /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		188421B614D72E380073189E /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		25DD882E0B31F5F00079B759 /* d3xp.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = d3xp.xcodeproj; sourceTree = "<group>"; };
 		29B97319FDCFA39411CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -686,6 +684,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				188421B714D72E380073189E /* libz.dylib in Frameworks */,
 				81326DCC099C164B003C4788 /* libcurl_static.a in Frameworks */,
 				812259940912BF87005D34B9 /* liboggVorbis_nopic.a in Frameworks */,
 				812259930912BF7F005D34B9 /* libidlib_nopic.a in Frameworks */,
@@ -737,10 +736,6 @@
 		29B97314FDCFA39411CA2CEA /* Doom3 */ = {
 			isa = PBXGroup;
 			children = (
-				18F66C4214D428EF00B8101F /* OpenGL.framework */,
-				18F66C4014D428DC00B8101F /* CoreAudio.framework */,
-				18F66C3E14D428CE00B8101F /* IOKit.framework */,
-				18F66C3C14D428BC00B8101F /* Carbon.framework */,
 				25DD882E0B31F5F00079B759 /* d3xp.xcodeproj */,
 				812256420912BC26005D34B9 /* Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -771,10 +766,11 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				184E8B9E14D4298400ACADDE /* IOKit.framework */,
 				184E8B9C14D4296900ACADDE /* Carbon.framework */,
 				184E8B9814D4293500ACADDE /* CoreAudio.framework */,
+				184E8B9E14D4298400ACADDE /* IOKit.framework */,
 				184E8B9A14D4295F00ACADDE /* OpenGL.framework */,
+				188421B614D72E380073189E /* libz.dylib */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
