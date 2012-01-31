@@ -1,9 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="UserMacros">
+    <StaticLibSuffix>_d</StaticLibSuffix>
+  </PropertyGroup>
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
     <_PropertySheetDisplayName>Debug</_PropertySheetDisplayName>
   </PropertyGroup>
+  <ItemGroup>
+    <BuildMacro Include="StaticLibSuffix">
+      <Value>$(StaticLibSuffix)</Value>
+    </BuildMacro>
+  </ItemGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <Optimization>Disabled</Optimization>
