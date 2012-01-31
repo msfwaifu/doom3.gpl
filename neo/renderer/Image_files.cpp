@@ -931,9 +931,9 @@ static void LoadJPG( const char *filename, unsigned char **pic, int *width, int 
      * Here the array is only one element long, but you could ask for
      * more than one scanline at a time if that's more convenient.
      */
+	byte* pDst = out + (cinfo.output_width * cinfo.output_scanline * 4);
     (void) jpeg_read_scanlines(&cinfo, &buffer[0], 1);
 	byte* pSrc = &buffer[0][0];
-	byte* pDst = out + (cinfo.output_width * cinfo.output_scanline * 4);
 	for (int x = 0; x < cinfo.output_width; x++)
 	{
 		pDst[0] = pSrc[0];
