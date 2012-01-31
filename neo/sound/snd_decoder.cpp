@@ -184,7 +184,7 @@ int idWaveFile::ReadOGG( byte* pBuffer, int dwSizeToRead, int *pdwSizeRead ) {
 	OggVorbis_File *ov = (OggVorbis_File *) ogg;
 
 	do {
-		int ret = ov_read( ov, bufferPtr, total >= 4096 ? 4096 : total, Swap_IsBigEndian(), 2, 1, &ov->stream );
+		int ret = ov_read( ov, bufferPtr, total >= 4096 ? 4096 : total, Swap_IsBigEndian(), 2, 1, NULL );
 		if ( ret == 0 ) {
 			break;
 		}
@@ -477,7 +477,7 @@ int idSampleDecoderLocal::DecodeOGG( idSoundSample *sample, int sampleOffset44k,
 	readSamples = 0;
 	do {
 		float **samples;
-		int ret = ov_read_float( &ogg, &samples, totalSamples / sample->objectInfo.nChannels, &ogg.stream );
+		int ret = ov_read_float( &ogg, &samples, totalSamples / sample->objectInfo.nChannels, NULL );
 		if ( ret == 0 ) {
 			failed = true;
 			break;

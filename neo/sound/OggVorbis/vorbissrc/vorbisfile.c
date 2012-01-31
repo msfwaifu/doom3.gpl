@@ -828,16 +828,16 @@ long ov_bitrate(OggVorbis_File *vf,int i){
     float br;
     for(i=0;i<vf->links;i++)
       bits+=(vf->offsets[i+1]-vf->dataoffsets[i])*8;
-    /* This once read: return(rint(bits/ov_TIME_Total(vf,-1)));
+    /* This once read: return(rint(bits/ov_time_total(vf,-1)));
      * gcc 3.x on x86 miscompiled this at optimisation level 2 and above,
      * so this is slightly transformed to make it work.
      */
-    br = bits/ov_TIME_Total(vf,-1);
+    br = bits/ov_time_total(vf,-1);
     return(rint(br));
   }else{
     if(vf->seekable){
       /* return the actual bitrate */
-      return(rint((vf->offsets[i+1]-vf->dataoffsets[i])*8/ov_TIME_Total(vf,i)));
+      return(rint((vf->offsets[i+1]-vf->dataoffsets[i])*8/ov_time_total(vf,i)));
     }else{
       /* return nominal if set */
       if(vf->vi[i].bitrate_nominal>0){
@@ -925,14 +925,14 @@ ogg_int64_t ov_pcm_total(OggVorbis_File *vf,int i){
 	    OV_EINVAL if the stream is not seekable (we can't know the
 	    length) or only partially open 
 */
-double ov_TIME_Total(OggVorbis_File *vf,int i){
+double ov_time_total(OggVorbis_File *vf,int i){
   if(vf->ready_state<OPENED)return(OV_EINVAL);
   if(!vf->seekable || i>=vf->links)return(OV_EINVAL);
   if(i<0){
     double acc=0;
     int i;
     for(i=0;i<vf->links;i++)
-      acc+=ov_TIME_Total(vf,i);
+      acc+=ov_time_total(vf,i);
     return(acc);
   }else{
     return((double)(vf->pcmlengths[i*2+1])/vf->vi[i].rate);
@@ -1361,22 +1361,22 @@ int ov_time_seek(OggVorbis_File *vf,double seconds){
 
   int link=-1;
   ogg_int64_t pcm_total=ov_pcm_total(vf,-1);
-  double TIME_Total=ov_TIME_Total(vf,-1);
+  double time_total=ov_time_total(vf,-1);
 
   if(vf->ready_state<OPENED)return(OV_EINVAL);
   if(!vf->seekable)return(OV_ENOSEEK);
-  if(seconds<0 || seconds>TIME_Total)return(OV_EINVAL);
+  if(seconds<0 || seconds>time_total)return(OV_EINVAL);
   
   /* which bitstream section does this time offset occur in? */
   for(link=vf->links-1;link>=0;link--){
     pcm_total-=vf->pcmlengths[link*2+1];
-    TIME_Total-=ov_TIME_Total(vf,link);
-    if(seconds>=TIME_Total)break;
+    time_total-=ov_time_total(vf,link);
+    if(seconds>=time_total)break;
   }
 
   /* enough information to convert time offset to pcm offset */
   {
-    ogg_int64_t target=pcm_total+(seconds-TIME_Total)*vf->vi[link].rate;
+    ogg_int64_t target=pcm_total+(seconds-time_total)*vf->vi[link].rate;
     return(ov_pcm_seek(vf,target));
   }
 }
@@ -1388,22 +1388,22 @@ int ov_time_seek_page(OggVorbis_File *vf,double seconds){
 
   int link=-1;
   ogg_int64_t pcm_total=ov_pcm_total(vf,-1);
-  double TIME_Total=ov_TIME_Total(vf,-1);
+  double time_total=ov_time_total(vf,-1);
 
   if(vf->ready_state<OPENED)return(OV_EINVAL);
   if(!vf->seekable)return(OV_ENOSEEK);
-  if(seconds<0 || seconds>TIME_Total)return(OV_EINVAL);
+  if(seconds<0 || seconds>time_total)return(OV_EINVAL);
   
   /* which bitstream section does this time offset occur in? */
   for(link=vf->links-1;link>=0;link--){
     pcm_total-=vf->pcmlengths[link*2+1];
-    TIME_Total-=ov_TIME_Total(vf,link);
-    if(seconds>=TIME_Total)break;
+    time_total-=ov_time_total(vf,link);
+    if(seconds>=time_total)break;
   }
 
   /* enough information to convert time offset to pcm offset */
   {
-    ogg_int64_t target=pcm_total+(seconds-TIME_Total)*vf->vi[link].rate;
+    ogg_int64_t target=pcm_total+(seconds-time_total)*vf->vi[link].rate;
     return(ov_pcm_seek_page(vf,target));
   }
 }
@@ -1422,25 +1422,25 @@ ogg_int64_t ov_pcm_tell(OggVorbis_File *vf){
 }
 
 /* return time offset (seconds) of next PCM sample to be read */
-double ov_TIME_Tell(OggVorbis_File *vf){
+double ov_time_tell(OggVorbis_File *vf){
   int link=0;
   ogg_int64_t pcm_total=0;
-  double TIME_Total=0.f;
+  double time_total=0.f;
   
   if(vf->ready_state<OPENED)return(OV_EINVAL);
   if(vf->seekable){
     pcm_total=ov_pcm_total(vf,-1);
-    TIME_Total=ov_TIME_Total(vf,-1);
+    time_total=ov_time_total(vf,-1);
   
     /* which bitstream section does this time offset occur in? */
     for(link=vf->links-1;link>=0;link--){
       pcm_total-=vf->pcmlengths[link*2+1];
-      TIME_Total-=ov_TIME_Total(vf,link);
+      time_total-=ov_time_total(vf,link);
       if(vf->pcm_offset>=pcm_total)break;
     }
   }
 
-  return((double)TIME_Total+(double)(vf->pcm_offset-pcm_total)/vf->vi[link].rate);
+  return((double)time_total+(double)(vf->pcm_offset-pcm_total)/vf->vi[link].rate);
 }
 
 /*  link:   -1) return the vorbis_info struct for the bitstream section
