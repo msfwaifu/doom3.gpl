@@ -402,13 +402,7 @@ game_demo = None
 
 # build curl if needed
 if ( NOCURL == '0' and ( TARGET_CORE == '1' or TARGET_MONO == '1' ) ):
-	# 1: debug, 2: release
-	if ( BUILD == 'release' ):
-		local_curl = 2
-	else:
-		local_curl = 1
-	Export( 'GLOBALS ' + GLOBALS )
-	curl_lib = SConscript( 'sys/scons/SConscript.curl' )
+	local_curl = 1
 
 if ( TARGET_CORE == '1' ):
 	local_gamedll = 1
