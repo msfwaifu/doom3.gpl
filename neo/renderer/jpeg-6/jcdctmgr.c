@@ -58,7 +58,7 @@ start_pass_fdctmgr (j_compress_ptr cinfo)
   int ci, qtblno, i;
   jpeg_component_info *compptr;
   JQUANT_TBL * qtbl;
-  //DCTELEM * dtbl;
+  DCTELEM * dtbl;
 
   for (ci = 0, compptr = cinfo->comp_info; ci < cinfo->num_components;
        ci++, compptr++) {

@@ -14,14 +14,10 @@
  */
 
 /* this is not a core library module, so it doesn't define JPEG_INTERNALS */
-
 #include "jinclude.h"
 #include "jpeglib.h"
 #include "jversion.h"
 #include "jerror.h"
-
-extern	jpg_Error( const char *fmt, ... );
-extern	jpg_Printf( const char *fmt, ... );
 
 #ifndef EXIT_FAILURE		/* define exit() codes if not provided */
 #define EXIT_FAILURE  1
@@ -64,15 +60,13 @@ const char * const jpeg_std_message_table[] = {
 METHODDEF void
 error_exit (j_common_ptr cinfo)
 {
-  char buffer[JMSG_LENGTH_MAX];
-
-  /* Create the message */
-  (*cinfo->err->format_message) (cinfo, buffer);
+  /* Always display the message */
+  (*cinfo->err->output_message) (cinfo);
 
   /* Let the memory manager delete any temp files before we die */
   jpeg_destroy(cinfo);
 
-  jpg_Error( "%s\n", buffer );
+  exit(EXIT_FAILURE);
 }
 
 
@@ -91,7 +85,7 @@ output_message (j_common_ptr cinfo)
   (*cinfo->err->format_message) (cinfo, buffer);
 
   /* Send it to stderr, adding a newline */
-  jpg_Printf( "%s\n", buffer );
+  fprintf(stderr, "%s\n", buffer);
 }
 
 

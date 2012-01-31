@@ -13,7 +13,6 @@
 #ifndef JPEGLIB_H
 #define JPEGLIB_H
 
-typedef unsigned char boolean;
 /*
  * First we include the configuration files that record how this
  * installation of the JPEG library is set up.  jconfig.h can be
@@ -22,9 +21,9 @@ typedef unsigned char boolean;
  */
 
 #ifndef JCONFIG_INCLUDED	/* in case jinclude.h already did */
-#include "../jpeg-6/jconfig.h"		/* widely used configuration options */
+#include "jconfig.h"		/* widely used configuration options */
 #endif
-#include "../jpeg-6/jmorecfg.h"		/* seldom changed options */
+#include "jmorecfg.h"		/* seldom changed options */
 
 
 /* Version ID for the JPEG library.
@@ -874,7 +873,7 @@ EXTERN void jpeg_destroy_decompress JPP((j_decompress_ptr cinfo));
 /* Standard data source and destination managers: stdio streams. */
 /* Caller is responsible for opening the file before and closing after. */
 EXTERN void jpeg_stdio_dest JPP((j_compress_ptr cinfo, FILE * outfile));
-EXTERN void jpeg_stdio_src JPP((j_decompress_ptr cinfo, unsigned char *infile));
+EXTERN void jpeg_stdio_src JPP((j_decompress_ptr cinfo, FILE * infile));
 
 /* Default parameter setup for compression */
 EXTERN void jpeg_set_defaults JPP((j_compress_ptr cinfo));
@@ -1044,8 +1043,8 @@ struct jpeg_color_quantizer { long dummy; };
  */
 
 #ifdef JPEG_INTERNALS
-#include "../jpeg-6/jpegint.h"		/* fetch private declarations */
-#include "../jpeg-6/jerror.h"		/* fetch error codes too */
+#include "jpegint.h"		/* fetch private declarations */
+#include "jerror.h"		/* fetch error codes too */
 #endif
 
 #endif /* JPEGLIB_H */

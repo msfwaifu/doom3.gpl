@@ -8,7 +8,7 @@
  * This file provides a really simple implementation of the system-
  * dependent portion of the JPEG memory manager.  This implementation
  * assumes that no backing-store files are needed: all required space
- * can be obtained from ri.Malloc().
+ * can be obtained from malloc().
  * This is very portable in the sense that it'll compile on almost anything,
  * but you'd better have lots of main memory (or virtual memory) if you want
  * to process big images.
@@ -20,9 +20,15 @@
 #include "jpeglib.h"
 #include "jmemsys.h"		/* import the system-dependent declarations */
 
+#ifndef HAVE_STDLIB_H		/* <stdlib.h> should declare malloc(),free() */
+extern void * malloc JPP((size_t size));
+extern void free JPP((void *ptr));
+#endif
+
+
 /*
- * Memory allocation and ri.Freeing are controlled by the regular library
- * routines ri.Malloc() and ri.Free().
+ * Memory allocation and freeing are controlled by the regular library
+ * routines malloc() and free().
  */
 
 GLOBAL void *

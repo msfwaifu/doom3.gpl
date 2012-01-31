@@ -49,33 +49,40 @@ void R_LoadImage( const char *name, byte **pic, int *width, int *height, bool ma
 
 extern "C" {
 #include "jpeg-6/jpeglib.h"
+}
+void jpeg_memory_src (j_decompress_ptr cinfo, byte *infile, int size);
 
-	// hooks from jpeg lib to our system
+static void my_error_exit(j_common_ptr cinfo)
+{
+  char buffer[JMSG_LENGTH_MAX];
 
-	void jpg_Error( const char *fmt, ... ) {
-		va_list		argptr;
-		char		msg[2048];
+  /* Create the message */
+  (*cinfo->err->format_message) (cinfo, buffer);
 
-		va_start (argptr,fmt);
-		vsprintf (msg,fmt,argptr);
-		va_end (argptr);
+  /* Let the memory manager delete any temp files before we die */
+  jpeg_destroy(cinfo);
 
-		common->FatalError( "%s", msg );
-	}
-
-	void jpg_Printf( const char *fmt, ... ) {
-		va_list		argptr;
-		char		msg[2048];
-
-		va_start (argptr,fmt);
-		vsprintf (msg,fmt,argptr);
-		va_end (argptr);
-
-		common->Printf( "%s", msg );
-	}
-
+  common->FatalError( "%s\n", buffer );
 }
 
+static void my_output_message(j_common_ptr cinfo)
+{
+  char buffer[JMSG_LENGTH_MAX];
+
+  /* Create the message */
+  (*cinfo->err->format_message) (cinfo, buffer);
+
+  /* Send it to stderr, adding a newline */
+  common->Printf( "%s", buffer );
+}
+
+struct jpeg_error_mgr* jpeg_doom_error(struct jpeg_error_mgr * err)
+{
+	jpeg_std_error(err);
+	err->error_exit = my_error_exit;
+	err->output_message = my_output_message;
+	return err;
+}
 
 /*
 ================
@@ -822,7 +829,7 @@ static void LoadJPG( const char *filename, unsigned char **pic, int *width, int 
   int row_stride;		/* physical row width in output buffer */
   unsigned char *out;
   byte	*fbuffer;
-  byte  *bbuf;
+  int		len;
 
   /* In this example we want to open the input file before doing anything else,
    * so that the setjmp() error recovery below can assume the file is open.
@@ -836,7 +843,6 @@ static void LoadJPG( const char *filename, unsigned char **pic, int *width, int 
 	*pic = NULL;		// until proven otherwise
   }
   {
-		int		len;
 		idFile *f;
 
 		f = fileSystem->OpenFileRead( filename );
@@ -864,14 +870,14 @@ static void LoadJPG( const char *filename, unsigned char **pic, int *width, int 
    * This routine fills in the contents of struct jerr, and returns jerr's
    * address which we place into the link field in cinfo.
    */
-  cinfo.err = jpeg_std_error(&jerr);
+  cinfo.err = jpeg_doom_error(&jerr);
 
   /* Now we can initialize the JPEG decompression object. */
   jpeg_create_decompress(&cinfo);
 
   /* Step 2: specify data source (eg, a file) */
 
-  jpeg_stdio_src(&cinfo, fbuffer);
+  jpeg_memory_src(&cinfo, fbuffer, len);
 
   /* Step 3: read file parameters with jpeg_read_header() */
 
@@ -904,10 +910,10 @@ static void LoadJPG( const char *filename, unsigned char **pic, int *width, int 
   /* JSAMPLEs per row in output buffer */
   row_stride = cinfo.output_width * cinfo.output_components;
 
-  if (cinfo.output_components!=4) {
-		common->DWarning( "JPG %s is unsupported color depth (%d)", 
-			filename, cinfo.output_components);
-  }
+  /* Make a one-row-high sample array that will go away when done with image */
+  buffer = (*cinfo.mem->alloc_sarray)
+		((j_common_ptr) &cinfo, JPOOL_IMAGE, row_stride, 1);
+
   out = (byte *)R_StaticAlloc(cinfo.output_width*cinfo.output_height*4);
 
   *pic = out;
@@ -925,22 +931,19 @@ static void LoadJPG( const char *filename, unsigned char **pic, int *width, int 
      * Here the array is only one element long, but you could ask for
      * more than one scanline at a time if that's more convenient.
      */
-	bbuf = ((out+(row_stride*cinfo.output_scanline)));
-	buffer = &bbuf;
-    (void) jpeg_read_scanlines(&cinfo, buffer, 1);
-  }
-
-  // clear all the alphas to 255
-  {
-	  int	i, j;
-		byte	*buf;
-
-		buf = *pic;
-
-	  j = cinfo.output_width * cinfo.output_height * 4;
-	  for ( i = 3 ; i < j ; i+=4 ) {
-		  buf[i] = 255;
-	  }
+    (void) jpeg_read_scanlines(&cinfo, &buffer[0], 1);
+	byte* pSrc = &buffer[0][0];
+	byte* pDst = out + (cinfo.output_width * cinfo.output_scanline * 4);
+	for (int x = 0; x < cinfo.output_width; x++)
+	{
+		pDst[0] = pSrc[0];
+		pDst[1] = pSrc[1];
+		pDst[2] = pSrc[2];
+		// clear all the alphas to 255
+		pDst[3] = 255;
+		pSrc += cinfo.output_components;
+		pDst += 4;
+	}
   }
 
   /* Step 7: Finish decompression */

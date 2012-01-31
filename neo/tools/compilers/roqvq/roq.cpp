@@ -31,6 +31,8 @@ If you have questions concerning this license or the applicable additional terms
 #include "roq.h"
 #include "codec.h"
 
+struct jpeg_error_mgr* jpeg_doom_error(struct jpeg_error_mgr * err);
+
 roq		*theRoQ;				// current roq file
 
 roq::roq( void )
@@ -433,7 +435,7 @@ void roq::WriteLossless( void ) {
 	* This routine fills in the contents of struct jerr, and returns jerr's
 	* address which we place into the link field in cinfo.
 	*/
-	cinfo.err = jpeg_std_error(&jerr);
+	cinfo.err = jpeg_doom_error(&jerr);
 	/* Now we can initialize the JPEG compression object. */
 	jpeg_create_compress(&cinfo);
 

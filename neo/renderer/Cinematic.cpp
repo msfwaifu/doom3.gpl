@@ -33,6 +33,7 @@ If you have questions concerning this license or the applicable additional terms
 extern "C" {
 #include "jpeg-6/jpeglib.h"
 }
+struct jpeg_error_mgr* jpeg_doom_error(struct jpeg_error_mgr * err);
 
 #include "tr_local.h"
 
@@ -1479,7 +1480,7 @@ int JPEGBlit( byte *wStatus, byte *data, int datasize )
   /* Step 1: allocate and initialize JPEG decompression object */
 
   /* We set up the normal JPEG error routines, then override error_exit. */
-  cinfo.err = jpeg_std_error(&jerr);
+  cinfo.err = jpeg_doom_error(&jerr);
 
   /* Now we can initialize the JPEG decompression object. */
   jpeg_create_decompress(&cinfo);
@@ -1536,7 +1537,7 @@ int JPEGBlit( byte *wStatus, byte *data, int datasize )
    * loop counter, so that we don't have to keep track ourselves.
    */
    
-  wStatus += (cinfo.output_height-1)*row_stride;
+  wStatus += (cinfo.output_height - 1) * cinfo.output_width * 4;
   while (cinfo.output_scanline < cinfo.output_height) {
     /* jpeg_read_scanlines expects an array of pointers to scanlines.
      * Here the array is only one element long, but you could ask for
@@ -1545,21 +1546,18 @@ int JPEGBlit( byte *wStatus, byte *data, int datasize )
     (void) jpeg_read_scanlines(&cinfo, &buffer[0], 1);
 
     /* Assume put_scanline_someplace wants a pointer and sample count. */
-	memcpy( wStatus, &buffer[0][0], row_stride );
-	/*
-	int x;
-	unsigned int *buf = (unsigned int *)&buffer[0][0];
-	unsigned int *out = (unsigned int *)wStatus;
-	for(x=0;x<cinfo.output_width;x++) {
-		unsigned int pixel = buf[x];
-		byte *roof = (byte *)&pixel;
-		byte temp = roof[0];
-		roof[0] = roof[2];
-		roof[2] = temp;
-		out[x] = pixel;
+	byte* pSrc = &buffer[0][0];
+	byte* pDst = wStatus;
+	for (int x = 0; x < cinfo.output_width; x++)
+	{
+		pDst[0] = pSrc[0];
+		pDst[1] = pSrc[1];
+		pDst[2] = pSrc[2];
+		pDst[3] = 255;
+		pSrc += cinfo.output_components;
+		pDst += 4;
 	}
-	*/
-	wStatus -= row_stride;
+	wStatus -= cinfo.output_width * 4;
   }
 
   /* Step 7: Finish decompression */

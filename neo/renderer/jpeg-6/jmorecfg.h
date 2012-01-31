@@ -149,12 +149,6 @@ typedef unsigned short UINT16;
 typedef unsigned int UINT16;
 #endif /* HAVE_UNSIGNED_SHORT */
 
-#ifndef __MWERKS__
-#ifndef _BASETSD_H_
-typedef long INT32;
-#endif
-#endif
-
 /* INT16 must hold at least the values -32768..32767. */
 
 #ifndef XMD_H			/* X11/xmd.h correctly defines INT16 */
@@ -163,9 +157,9 @@ typedef short INT16;
 
 /* INT32 must hold at least signed 32-bit values. */
 
-//#ifndef XMD_H			/* X11/xmd.h correctly defines INT32 */
-//typedef long INT32;
-//#endif
+#ifndef XMD_H			/* X11/xmd.h correctly defines INT32 */
+typedef long INT32;
+#endif
 
 /* Datatype used for image dimensions.  The JPEG standard only supports
  * images up to 64K*64K due to 16-bit fields in SOF markers.  Therefore
@@ -198,10 +192,8 @@ typedef unsigned int JDIMENSION;
  */
 
 #ifdef NEED_FAR_POINTERS
-#undef FAR
 #define FAR  far
 #else
-#undef FAR
 #define FAR
 #endif
 
@@ -213,9 +205,9 @@ typedef unsigned int JDIMENSION;
  * Defining HAVE_BOOLEAN before including jpeglib.h should make it work.
  */
 
-//#ifndef HAVE_BOOLEAN
-//typedef int boolean;
-//#endif
+#ifndef HAVE_BOOLEAN
+typedef int boolean;
+#endif
 #ifndef FALSE			/* in case these macros already exist */
 #define FALSE	0		/* values of boolean */
 #endif
@@ -250,8 +242,8 @@ typedef unsigned int JDIMENSION;
 
 /* Capability options common to encoder and decoder: */
 
-#undef DCT_ISLOW_SUPPORTED	/* slow but accurate integer algorithm */
-#undef DCT_IFAST_SUPPORTED	/* faster, less accurate integer method */
+#define DCT_ISLOW_SUPPORTED	/* slow but accurate integer algorithm */
+#define DCT_IFAST_SUPPORTED	/* faster, less accurate integer method */
 #define DCT_FLOAT_SUPPORTED	/* floating-point: accurate, fast on fast HW */
 
 /* Encoder capability options: */
@@ -273,14 +265,14 @@ typedef unsigned int JDIMENSION;
 /* Decoder capability options: */
 
 #undef  D_ARITH_CODING_SUPPORTED    /* Arithmetic coding back end? */
-#undef D_MULTISCAN_FILES_SUPPORTED /* Multiple-scan JPEG files? */
-#undef D_PROGRESSIVE_SUPPORTED	    /* Progressive JPEG? (Requires MULTISCAN)*/
-#undef BLOCK_SMOOTHING_SUPPORTED   /* Block smoothing? (Progressive only) */
-#undef IDCT_SCALING_SUPPORTED	    /* Output rescaling via IDCT? */
+#define D_MULTISCAN_FILES_SUPPORTED /* Multiple-scan JPEG files? */
+#define D_PROGRESSIVE_SUPPORTED	    /* Progressive JPEG? (Requires MULTISCAN)*/
+#define BLOCK_SMOOTHING_SUPPORTED   /* Block smoothing? (Progressive only) */
+#define IDCT_SCALING_SUPPORTED	    /* Output rescaling via IDCT? */
 #undef  UPSAMPLE_SCALING_SUPPORTED  /* Output rescaling at upsample stage? */
-#undef UPSAMPLE_MERGING_SUPPORTED  /* Fast path for sloppy upsampling? */
-#undef QUANT_1PASS_SUPPORTED	    /* 1-pass color quantization? */
-#undef QUANT_2PASS_SUPPORTED	    /* 2-pass color quantization? */
+#define UPSAMPLE_MERGING_SUPPORTED  /* Fast path for sloppy upsampling? */
+#define QUANT_1PASS_SUPPORTED	    /* 1-pass color quantization? */
+#define QUANT_2PASS_SUPPORTED	    /* 2-pass color quantization? */
 
 /* more capability options later, no doubt */
 
@@ -303,7 +295,7 @@ typedef unsigned int JDIMENSION;
 #define RGB_RED		0	/* Offset of Red in an RGB scanline element */
 #define RGB_GREEN	1	/* Offset of Green */
 #define RGB_BLUE	2	/* Offset of Blue */
-#define RGB_PIXELSIZE	4	/* JSAMPLEs per RGB scanline element */
+#define RGB_PIXELSIZE	3	/* JSAMPLEs per RGB scanline element */
 
 
 /* Definitions for speed-related optimizations. */
