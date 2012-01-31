@@ -188,8 +188,7 @@ static ogg_uint32_t crc_lookup[256]={
 int ogg_stream_init(ogg_stream_state *os,int serialno){
   if(os){
     memset(os,0,sizeof(*os));
-	// lowered for DOOM
-    os->body_storage=8*1024;
+    os->body_storage=16*1024;
     os->body_data=_ogg_malloc(os->body_storage*sizeof(*os->body_data));
 
     os->lacing_storage=1024;

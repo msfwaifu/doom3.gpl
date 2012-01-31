@@ -33,52 +33,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "OggVorbis/vorbis/codec.h"
 #include "OggVorbis/vorbis/vorbisfile.h"
 
-
-/*
-===================================================================================
-
-  Thread safe decoder memory allocator.
-
-  Each OggVorbis decoder consumes about 150kB of memory.
-
-===================================================================================
-*/
-
-idDynamicBlockAlloc<byte, 1<<20, 128>		decoderMemoryAllocator;
-
-const int MIN_OGGVORBIS_MEMORY				= 768 * 1024;
-
-extern "C" {
-	void *_decoder_malloc( size_t size );
-	void *_decoder_calloc( size_t num, size_t size );
-	void *_decoder_realloc( void *memblock, size_t size );
-	void _decoder_free( void *memblock );
-}
-
-void *_decoder_malloc( size_t size ) {
-	void *ptr = decoderMemoryAllocator.Alloc( size );
-	assert( size == 0 || ptr != NULL );
-	return ptr;
-}
-
-void *_decoder_calloc( size_t num, size_t size ) {
-	void *ptr = decoderMemoryAllocator.Alloc( num * size );
-	assert( ( num * size ) == 0 || ptr != NULL );
-	memset( ptr, 0, num * size );
-	return ptr;
-}
-
-void *_decoder_realloc( void *memblock, size_t size ) {
-	void *ptr = decoderMemoryAllocator.Resize( (byte *)memblock, size );
-	assert( size == 0 || ptr != NULL );
-	return ptr;
-}
-
-void _decoder_free( void *memblock ) {
-	decoderMemoryAllocator.Free( (byte *)memblock );
-}
-
-
 /*
 ===================================================================================
 
@@ -309,9 +263,6 @@ idSampleDecoder::Init
 ====================
 */
 void idSampleDecoder::Init( void ) {
-	decoderMemoryAllocator.Init();
-	decoderMemoryAllocator.SetLockMemory( true );
-	decoderMemoryAllocator.SetFixedBlocks( idSoundSystemLocal::s_realTimeDecoding.GetBool() ? 10 : 1 );
 }
 
 /*
@@ -320,7 +271,6 @@ idSampleDecoder::Shutdown
 ====================
 */
 void idSampleDecoder::Shutdown( void ) {
-	decoderMemoryAllocator.Shutdown();
 	sampleDecoderAllocator.Shutdown();
 }
 
@@ -344,24 +294,6 @@ void idSampleDecoder::Free( idSampleDecoder *decoder ) {
 	idSampleDecoderLocal *localDecoder = static_cast<idSampleDecoderLocal *>( decoder );
 	localDecoder->ClearDecoder();
 	sampleDecoderAllocator.Free( localDecoder );
-}
-
-/*
-====================
-idSampleDecoder::GetNumUsedBlocks
-====================
-*/
-int idSampleDecoder::GetNumUsedBlocks( void ) {
-	return decoderMemoryAllocator.GetNumUsedBlocks();
-}
-
-/*
-====================
-idSampleDecoder::GetUsedBlockMemory
-====================
-*/
-int idSampleDecoder::GetUsedBlockMemory( void ) {
-	return decoderMemoryAllocator.GetUsedBlockMemory();
 }
 
 /*
@@ -516,10 +448,6 @@ int idSampleDecoderLocal::DecodeOGG( idSoundSample *sample, int sampleOffset44k,
 
 	// open OGG file if not yet opened
 	if ( lastSample == NULL ) {
-		// make sure there is enough space for another decoder
-		if ( decoderMemoryAllocator.GetFreeBlockMemory() < MIN_OGGVORBIS_MEMORY ) {
-			return 0;
-		}
 		if ( sample->nonCacheData == NULL ) {
 			assert( false );	// this should never happen
 			failed = true;

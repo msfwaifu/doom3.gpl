@@ -880,8 +880,6 @@ public:
 	static void				Shutdown( void );
 	static idSampleDecoder *Alloc( void );
 	static void				Free( idSampleDecoder *decoder );
-	static int				GetNumUsedBlocks( void );
-	static int				GetUsedBlockMemory( void );
 
 	virtual					~idSampleDecoder( void ) {}
 	virtual void			Decode( idSoundSample *sample, int sampleOffset44k, int sampleCount44k, float *dest ) = 0;

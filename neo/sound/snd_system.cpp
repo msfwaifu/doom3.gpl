@@ -252,7 +252,6 @@ void ListSoundDecoders_f( const idCmdArgs &args ) {
 	common->Printf( "%d decoders\n", numWaitingDecoders + numActiveDecoders );
 	common->Printf( "%d waiting decoders\n", numWaitingDecoders );
 	common->Printf( "%d active decoders\n", numActiveDecoders );
-	common->Printf( "%d kB decoder memory in %d blocks\n", idSampleDecoder::GetUsedBlockMemory() >> 10, idSampleDecoder::GetNumUsedBlocks() );
 }
 
 /*

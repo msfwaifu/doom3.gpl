@@ -20,34 +20,10 @@
 /* make it easy on the folks that want to compile the libs with a
    different malloc than stdlib */
 
-// using private thread safe memory allocator for DOOM
-#if 1
-
-#include <stddef.h>
-#if !__MACH__ && __MWERKS__
-#include <types.h>
-#else
-#include <sys/types.h>
-#endif
-
-void *_decoder_malloc( size_t size );
-void *_decoder_calloc( size_t num, size_t size );
-void *_decoder_realloc( void *memblock, size_t size );
-void _decoder_free( void *memblock );
-
-#define _ogg_malloc		_decoder_malloc
-#define _ogg_calloc		_decoder_calloc
-#define _ogg_realloc	_decoder_realloc
-#define _ogg_free		_decoder_free
-
-#else
-
 #define _ogg_malloc  malloc
 #define _ogg_calloc  calloc
 #define _ogg_realloc realloc
 #define _ogg_free    free
-
-#endif
 
 #ifdef _WIN32 
 
