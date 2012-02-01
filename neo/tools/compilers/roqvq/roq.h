@@ -33,6 +33,10 @@ If you have questions concerning this license or the applicable additional terms
 #include "quaddefs.h"
 #define JPEG_INTERNALS
 extern "C" {
+#ifdef _WIN32
+#define INT32 jpeg_INT32
+#define boolean jpeg_boolean
+#endif
 #include "../../../renderer/jpeg-6/jpeglib.h"
 }
 #pragma once

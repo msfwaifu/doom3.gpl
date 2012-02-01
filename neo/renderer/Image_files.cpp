@@ -48,7 +48,13 @@ void R_LoadImage( const char *name, byte **pic, int *width, int *height, bool ma
  */
 
 extern "C" {
+#ifdef _WIN32
+#define INT32 jpeg_INT32
+#define boolean jpeg_boolean
+#endif
 #include "jpeg-6/jpeglib.h"
+#undef INT32
+#undef boolean
 }
 void jpeg_memory_src (j_decompress_ptr cinfo, byte *infile, int size);
 
