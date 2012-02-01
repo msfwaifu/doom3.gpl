@@ -47,9 +47,8 @@ void R_LoadImage( const char *name, byte **pic, int *width, int *height, bool ma
  * You may also wish to include "jerror.h".
  */
 
-extern "C" {
-#include "jpeg-6/jpeglib.h"
-}
+#include <jpeglib.h>
+
 void jpeg_memory_src (j_decompress_ptr cinfo, byte *infile, int size);
 
 static void my_error_exit(j_common_ptr cinfo)
