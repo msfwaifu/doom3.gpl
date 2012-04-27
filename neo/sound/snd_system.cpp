@@ -455,7 +455,7 @@ void idSoundSystemLocal::Shutdown() {
 			alDeleteSources( 1, &openalSources[i].handle );
 
 			// clear entry in source array
-			openalSources[i].handle = NULL;
+			openalSources[i].handle = 0;
 			openalSources[i].startTime = 0;
 			openalSources[i].chan = NULL;
 			openalSources[i].inUse = false;
@@ -1227,7 +1227,7 @@ ALuint idSoundSystemLocal::AllocOpenALSource( idSoundChannel *chan, bool looping
 
 		return openalSources[index].handle;
 	} else {
-		return NULL;
+		return 0;
 	}
 }
 
@@ -1241,7 +1241,7 @@ void idSoundSystemLocal::FreeOpenALSource( ALuint handle ) {
 	for ( i = 0; i < openalSourceCount; i++ ) {
 		if ( openalSources[i].handle == handle ) {
 			if ( openalSources[i].chan ) {
-				openalSources[i].chan->openalSource = NULL;
+				openalSources[i].chan->openalSource = 0;
 			}
 #if ID_OPENAL
 			// Reset source EAX ROOM level when freeing stereo source
