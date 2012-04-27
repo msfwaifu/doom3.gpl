@@ -828,7 +828,6 @@ static void LoadJPG( const char *filename, unsigned char **pic, int *width, int 
   int row_stride;		/* physical row width in output buffer */
   unsigned char *out;
   byte	*fbuffer;
-  int		len;
 
   /* In this example we want to open the input file before doing anything else,
    * so that the setjmp() error recovery below can assume the file is open.
@@ -841,26 +840,25 @@ static void LoadJPG( const char *filename, unsigned char **pic, int *width, int 
   if ( pic ) {
 	*pic = NULL;		// until proven otherwise
   }
-  {
-		idFile *f;
 
-		f = fileSystem->OpenFileRead( filename );
-		if ( !f ) {
-			return;
-		}
-		len = f->Length();
-		if ( timestamp ) {
-			*timestamp = f->Timestamp();
-		}
-		if ( !pic ) {
-			fileSystem->CloseFile( f );
-			return;	// just getting timestamp
-		}
-		fbuffer = (byte *)Mem_ClearedAlloc( len + 4096 );
-		f->Read( fbuffer, len );
+	int len;
+	idFile *f;
+
+	f = fileSystem->OpenFileRead( filename );
+	if ( !f ) {
+		return;
+	}
+	len = f->Length();
+	if ( timestamp ) {
+		*timestamp = f->Timestamp();
+	}
+	if ( !pic ) {
 		fileSystem->CloseFile( f );
-  }
-
+		return;	// just getting timestamp
+	}
+	fbuffer = (byte *)Mem_ClearedAlloc( len + 4096 );
+	f->Read( fbuffer, len );
+	fileSystem->CloseFile( f );
 
   /* Step 1: allocate and initialize JPEG decompression object */
 
