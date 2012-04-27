@@ -2,7 +2,7 @@
 ===========================================================================
 
 Doom 3 GPL Source Code
-Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company.
 
 This file is part of the Doom 3 GPL Source Code ("Doom 3 Source Code").
 
@@ -371,17 +371,17 @@ void idSoundSystemLocal::Init() {
 				common->Printf( "OpenAL: disabling ( no EAX ). Using legacy mixer.\n" );
 
 				alcMakeContextCurrent( NULL );
-		
+
 				alcDestroyContext( openalContext );
 				openalContext = NULL;
-		
+
 				alcCloseDevice( openalDevice );
 				openalDevice = NULL;
 			} else {
 
-				ALuint handle;		
+				ALuint handle;
 				openalSourceCount = 0;
-				
+
 				while ( openalSourceCount < 256 ) {
 					alGetError();
 					alGenSources( 1, &handle );
@@ -440,7 +440,7 @@ void idSoundSystemLocal::Shutdown() {
 
 	// destroy openal sources
 	if ( useOpenAL ) {
-		
+
 		efxloaded = false;
 
 		// adjust source count back up to allow for freeing of all resources
@@ -450,7 +450,7 @@ void idSoundSystemLocal::Shutdown() {
 			// stop source
 			alSourceStop( openalSources[i].handle );
 			alSourcei( openalSources[i].handle, AL_BUFFER, 0 );
-			
+
 			// delete source
 			alDeleteSources( 1, &openalSources[i].handle );
 
@@ -471,10 +471,10 @@ void idSoundSystemLocal::Shutdown() {
 	// destroy openal device and context
 	if ( useOpenAL ) {
 		alcMakeContextCurrent( NULL );
-		
+
 		alcDestroyContext( openalContext );
 		openalContext = NULL;
-		
+
 		alcCloseDevice( openalDevice );
 		openalDevice = NULL;
 	}
@@ -560,7 +560,7 @@ int idSoundSystemLocal::GetCurrent44kHzTime( void ) const {
 		return CurrentSoundTime;
 	} else {
 		// NOTE: this would overflow 31bits within about 1h20 ( not that important since we get a snd_audio_hw right away pbly )
-		//return ( ( Sys_Milliseconds()*441 ) / 10 ) * 4; 
+		//return ( ( Sys_Milliseconds()*441 ) / 10 ) * 4;
 		return idMath::FtoiFast( (float)Sys_Milliseconds() * 176.4f );
 	}
 }
@@ -605,14 +605,14 @@ int idSoundSystemLocal::AsyncMix( int soundTime, float *mixBuffer ) {
 
 	inTime = Sys_Milliseconds();
 	numSpeakers = snd_audio_hw->GetNumberOfSpeakers();
-	
+
 	// let the active sound world mix all the channels in unless muted or avi demo recording
 	if ( !muted && currentSoundWorld && !currentSoundWorld->fpa[0] ) {
 		currentSoundWorld->MixLoop( soundTime, numSpeakers, mixBuffer );
 	}
 
 	CurrentSoundTime = soundTime;
-	
+
 	return Sys_Milliseconds() - inTime;
 }
 
@@ -686,7 +686,7 @@ int idSoundSystemLocal::AsyncUpdate( int inTime ) {
 
 	// newSoundTime is in multi-channel samples since the sound system was started
 	int newSoundTime = ( buffers * MIXBUFFER_SAMPLES * ROOM_SLICES_IN_BUFFER ) + nextWriteSamples;
-	
+
 	// check for impending overflow
 	// FIXME: we don't handle sound wrap-around correctly yet
 	if ( newSoundTime > 0x6fffffff ) {
@@ -768,7 +768,7 @@ int idSoundSystemLocal::AsyncUpdateWrite( int inTime ) {
 		Sys_Printf( "missed %d sound updates\n", dwCurrentBlock - nextWriteBlock );
 	}
 
-	int sampleTime = dwCurrentBlock * MIXBUFFER_SAMPLES;	
+	int sampleTime = dwCurrentBlock * MIXBUFFER_SAMPLES;
 	int numSpeakers = snd_audio_hw->GetNumberOfSpeakers();
 
 	if ( useOpenAL ) {
@@ -822,7 +822,7 @@ float idSoundSystemLocal::dB2Scale( const float val ) const {
 	} else if ( val <= -60.0f ) {
 		return 0.0f;
 	} else if ( val >= 60.0f ) {
-		return powf( 2.0f, val * ( 1.0f / 6.0f ) ); 
+		return powf( 2.0f, val * ( 1.0f / 6.0f ) );
 	}
 	int ival = (int)( ( val + 60.0f ) * 10.0f );
 	return volumesDB[ival];
@@ -1114,7 +1114,7 @@ void idSoundSystemLocal::BeginLevelLoad() {
 		return;
 	}
 	soundCache->BeginLevelLoad();
-	
+
 	if ( efxloaded ) {
 		EFXDatabase.UnloadFile();
 		efxloaded = false;

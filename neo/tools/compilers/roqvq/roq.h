@@ -2,7 +2,7 @@
 ===========================================================================
 
 Doom 3 GPL Source Code
-Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company.
 
 This file is part of the Doom 3 GPL Source Code ("Doom 3 Source Code").
 
@@ -46,21 +46,21 @@ public:
 						~NSBitmapImageRep();
 
 	NSBitmapImageRep &	operator=( const NSBitmapImageRep &a );
-	
+
 	int					samplesPerPixel( void );
 	int					pixelsWide( void );
 	int					pixelsHigh( void );
 	byte *				bitmapData( void );
 	bool				hasAlpha( void );
 	bool				isPlanar( void );
-	
+
 private:
 
 	byte *				bmap;
 	int					width;
 	int					height;
 	ID_TIME_T				timestamp;
-	
+
 };
 
 class roq {
@@ -100,11 +100,11 @@ private:
 	int					SizeFile( idFile *ftosize );
 	void				CloseRoQFile( void );
 	void				WriteCodeBookToStream( byte *codebook, int csize, word cflags );
-	
+
 	static	void		JPEGInitDestination( j_compress_ptr cinfo );
 	static	boolean		JPEGEmptyOutputBuffer( j_compress_ptr cinfo );
 	static	void		JPEGTermDestination( j_compress_ptr cinfo );
-	
+
 	void				JPEGDest( j_compress_ptr cinfo, byte* outfile, int size );
 	void				JPEGSave( char * filename, int quality, int image_width, int image_height, unsigned char *image_buffer );
 
@@ -116,15 +116,15 @@ private:
 	int					numQuadCels;
 	bool				quietMode;
 	bool				lastFrame;
-	idStr 				roqOutfile;
-	idStr 				currentFile;
+	idStr				roqOutfile;
+	idStr				currentFile;
 	int					numberOfFrames;
 	int					previousSize;
-	byte 				codes[4096];
+	byte				codes[4096];
 	bool				dataStuff;
 
 };
 
-extern roq *theRoQ;				// current roq 
+extern roq *theRoQ;				// current roq
 
 #endif /* !__roq_h__ */
