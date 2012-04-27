@@ -254,6 +254,7 @@ else:
 sound_lib = sound_env.StaticLibrary( 'sound', sound_list )
 
 local_env.Append( LIBS = [ 'pthread', 'dl', 'z', 'vorbisfile', 'vorbis', 'ogg', 'jpeg' ] )
+
 if ( local_curl == 1 ):
 	local_env.Append( LIBS = [ 'curl' ] )
 if ( local_dedicated == 0 ):
