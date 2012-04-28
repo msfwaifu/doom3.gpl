@@ -118,11 +118,15 @@ If you have questions concerning this license or the applicable additional terms
 #endif
 
 #ifndef ID_OPENAL
-#	if ( defined(_WIN32) || defined(MACOS_X) ) && !defined( ID_DEDICATED )
+#	if !defined( ID_DEDICATED )
 #		define ID_OPENAL 1
 #	else
 #		define ID_OPENAL 0
 #	endif
+#endif
+
+#ifndef ID_OPENAL_EAX
+#	define ID_OPENAL_EAX 0
 #endif
 
 #ifndef ID_ALLOW_D3XP
