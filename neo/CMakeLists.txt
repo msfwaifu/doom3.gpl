@@ -71,6 +71,9 @@ if (NOT CMAKE_BUILD_TYPE)
 endif()
 
 # libs
+find_package(ZLIB REQUIRED)
+include_directories(${ZLIB_INCLUDE_DIR})
+
 find_package(JPEG REQUIRED)
 include_directories(${JPEG_INCLUDE_DIR})
 
@@ -687,6 +690,7 @@ if (CORE)
 		${VORBIS_LIBRARIES}
 		${CURL_LIBRARY}
 		${JPEG_LIBRARY}
+		${ZLIB_LIBRARY}
 		${sys_libs}
 	)
 endif()
@@ -708,6 +712,7 @@ if (DEDICATED)
 		${VORBIS_LIBRARIES}
 		${CURL_LIBRARY}
 		${JPEG_LIBRARY}
+		${ZLIB_LIBRARY}
 		${sys_libs}
 	)
 endif()
@@ -718,6 +723,7 @@ if (GAME)
 	set_target_properties(game${cpu} PROPERTIES COMPILE_DEFINITIONS "GAME_DLL")
 	set_target_properties(game${cpu} PROPERTIES LINK_FLAGS "${ldflags}")
 	set_target_properties(game${cpu} PROPERTIES INSTALL_NAME_DIR "@executable_path")
+	target_link_libraries(game${cpu} ${ZLIB_LIBRARY})
 endif()
 
 if (D3XP)
@@ -726,4 +732,5 @@ if (D3XP)
 	set_target_properties(game${cpu}-d3xp PROPERTIES COMPILE_DEFINITIONS "GAME_DLL;_D3XP;CTF")
 	set_target_properties(game${cpu}-d3xp PROPERTIES LINK_FLAGS "${ldflags}")
 	set_target_properties(game${cpu}-d3xp PROPERTIES INSTALL_NAME_DIR "@executable_path")
+	target_link_libraries(game${cpu}-d3xp ${ZLIB_LIBRARY})
 endif()
