@@ -235,7 +235,7 @@ idDict::Checksum
 ================
 */
 int	idDict::Checksum( void ) const {
-	unsigned long ret;
+	unsigned int ret;
 	int i, n;
 
 	idList<idKeyValue> sorted = args;
@@ -645,8 +645,8 @@ idDict::ShowMemoryUsage_f
 ================
 */
 void idDict::ShowMemoryUsage_f( const idCmdArgs &args ) {
-	idLib::common->Printf( "%5d KB in %d keys\n", globalKeys.Size() >> 10, globalKeys.Num() );
-	idLib::common->Printf( "%5d KB in %d values\n", globalValues.Size() >> 10, globalValues.Num() );
+	idLib::common->Printf( "%5zd KB in %d keys\n", globalKeys.Size() >> 10, globalKeys.Num() );
+	idLib::common->Printf( "%5zd KB in %d values\n", globalValues.Size() >> 10, globalValues.Num() );
 }
 
 /*

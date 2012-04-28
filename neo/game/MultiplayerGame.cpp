@@ -935,7 +935,7 @@ void idMultiplayerGame::PlayerStats( int clientNum, char *data, const int len ) 
 		return;
 	}
 
-	idStr::snPrintf( data, len, "team=%d score=%ld tks=%ld", team, playerState[ clientNum ].fragCount, playerState[ clientNum ].teamFragCount );
+	idStr::snPrintf( data, len, "team=%d score=%d tks=%d", team, playerState[ clientNum ].fragCount, playerState[ clientNum ].teamFragCount );
 
 	return;
 
@@ -1485,7 +1485,7 @@ void idMultiplayerGame::UpdateMainGui( void ) {
 		mainGui->SetStateString( keyval->GetKey(), keyval->GetValue() );
 	}
 	mainGui->StateChanged( gameLocal.time );
-#if defined( __linux__ )
+#if defined( __unix__ )
 	// replacing the oh-so-useful s_reverse with sound backend prompt
 	mainGui->SetStateString( "driver_prompt", "1" );
 #else

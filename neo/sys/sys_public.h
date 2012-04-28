@@ -61,7 +61,12 @@ If you have questions concerning this license or the applicable additional terms
 
 #define THREAD_RETURN_TYPE				dword
 
+#if defined(_MSC_VER) && (defined(_M_IX86) || defined(_M_X64))
+	#define ID_LITTLE_ENDIAN			1
 #endif
+
+#endif
+
 
 // Mac OSX
 #if defined(MACOS_X) || defined(__APPLE__)
@@ -104,24 +109,39 @@ If you have questions concerning this license or the applicable additional terms
 #endif
 
 
-// Linux
-#ifdef __linux__
+// Unix
+#ifdef __unix__
 
 #define BUILD_OS_ID					2
 
+#ifdef __linux__
+	#define BUILD_OS "linux"
+#elif defined(__FreeBSD__)
+	#define BUILD_OS "FreeBSD"
+#elif defined(__DragonFly__)
+	#define BUILD_OS "DragonFly"
+#elif defined(__OpenBSD__)
+	#define BUILD_OS "OpenBSD"
+#elif defined(__NetBSD__)
+	#define BUILD_OS "NetBSD"
+#else
+	#error unknown operating system!
+#endif
+
 #ifdef __i386__
-	#define	BUILD_STRING				"linux-x86"
 	#define CPUSTRING					"x86"
 	#define CPU_EASYARGS				1
 #elif defined(__x86_64__)
-	#define	BUILD_STRING				"linux-x86_64"
 	#define CPUSTRING					"x86_64"
 	#define CPU_EASYARGS				0
 #elif defined(__ppc__)
-	#define	BUILD_STRING				"linux-ppc"
 	#define CPUSTRING					"ppc"
 	#define CPU_EASYARGS				0
+#else
+	#error unknown cpu architecture!
 #endif
+
+#define	BUILD_STRING					(BUILD_OS "-" CPUSTRING)
 
 #define _alloca							alloca
 #define _alloca16( x )					((void *)((((uintptr_t)alloca( (x)+15 )) + 15) & ~15))
@@ -142,6 +162,27 @@ If you have questions concerning this license or the applicable additional terms
 
 #define THREAD_RETURN_TYPE				void *
 
+#endif
+
+
+#if !defined(ID_LITTLE_ENDIAN) && !defined(ID_BIG_ENDIAN)
+	#if defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__)
+		#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+			#define ID_LITTLE_ENDIAN
+		#endif
+	#elif defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__)
+		#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+			#define ID_BIG_ENDIAN
+		#endif
+	#endif
+#endif
+
+#if !defined(ID_LITTLE_ENDIAN) && !defined(ID_BIG_ENDIAN)
+	#if defined(__i386__) || defined(__x86_64__)
+		#define ID_LITTLE_ENDIAN		1
+	#elif defined(__ppc__)
+		#define ID_BIG_ENDIAN			1
+	#endif
 #endif
 
 #ifdef __GNUC__

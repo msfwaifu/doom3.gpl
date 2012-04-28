@@ -31,26 +31,26 @@ If you have questions concerning this license or the applicable additional terms
 
 #include <zlib.h>
 
-void CRC32_InitChecksum(unsigned long& crcvalue)
+void CRC32_InitChecksum(unsigned int& crcvalue)
 {
 	crcvalue = 0;
 }
 
-void CRC32_Update(unsigned long& crcvalue, const byte data)
+void CRC32_Update(unsigned int& crcvalue, const byte data)
 {
-	crcvalue = crc32(crcvalue, &data , 1);
+	crcvalue = crc32(crcvalue, &data, 1);
 }
 
-void CRC32_UpdateChecksum(unsigned long& crcvalue, const void* data, int length)
+void CRC32_UpdateChecksum(unsigned int& crcvalue, const void* data, int length)
 {
 	crcvalue = crc32(crcvalue, reinterpret_cast<const Bytef*>(data), length);
 }
 
-void CRC32_FinishChecksum(unsigned long &crcvalue)
+void CRC32_FinishChecksum(unsigned int& crcvalue)
 {
 }
 
-unsigned long CRC32_BlockChecksum(const void *data, int length)
+unsigned int CRC32_BlockChecksum(const void *data, int length)
 {
 	return crc32(0, reinterpret_cast<const Bytef*>(data), length);
 }
