@@ -211,7 +211,7 @@ void			idSysLocal::DebugVPrintf( const char *fmt, va_list arg ) {}
 
 double			idSysLocal::GetClockTicks( void ) { return 0.0; }
 double			idSysLocal::ClockTicksPerSecond( void ) { return 1.0; }
-cpuid_t			idSysLocal::GetProcessorId( void ) { return (cpuid_t)0; }
+int				idSysLocal::GetProcessorId( void ) { return 0; }
 const char *	idSysLocal::GetProcessorString( void ) { return ""; }
 const char *	idSysLocal::FPU_GetState( void ) { return ""; }
 bool			idSysLocal::FPU_StackIsEmpty( void ) { return true; }
@@ -220,11 +220,6 @@ void			idSysLocal::FPU_SetDAZ( bool enable ) {}
 
 bool			idSysLocal::LockMemory( void *ptr, int bytes ) { return false; }
 bool			idSysLocal::UnlockMemory( void *ptr, int bytes ) { return false; }
-
-void			idSysLocal::GetCallStack( address_t *callStack, const int callStackSize ) { memset( callStack, 0, callStackSize * sizeof( callStack[0] ) ); }
-const char *	idSysLocal::GetCallStackStr( const address_t *callStack, const int callStackSize ) { return ""; }
-const char *	idSysLocal::GetCallStackCurStr( int depth ) { return ""; }
-void			idSysLocal::ShutdownSymbols( void ) {}
 
 uintptr_t		idSysLocal::DLL_Load( const char *dllName ) { return 0; }
 void *			idSysLocal::DLL_GetProcAddress( uintptr_t dllHandle, const char *procName ) { return NULL; }

@@ -199,7 +199,6 @@ sys_string = ' \
 	posix/posix_main.cpp \
 	posix/posix_signal.cpp \
 	posix/posix_threads.cpp \
-	linux/stack.cpp \
 	linux/main.cpp \
 	stub/util_stub.cpp'
 
@@ -277,8 +276,6 @@ if ( OPENAL == '1' ):
 source_list = core_list
 source_list += idlib_objects
 source_list += sound_lib
-
-source_list += g_env_noopt.StaticObject( '../../tools/compilers/dmap/optimize_gcc.cpp' )
 
 if ( local_gamedll == 0 ):
 	source_list += game_objects

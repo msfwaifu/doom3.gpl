@@ -44,7 +44,7 @@ public:
 
 	virtual double			GetClockTicks( void );
 	virtual double			ClockTicksPerSecond( void );
-	virtual cpuid_t			GetProcessorId( void );
+	virtual int				GetProcessorId( void );
 	virtual const char *	GetProcessorString( void );
 	virtual const char *	FPU_GetState( void );
 	virtual bool			FPU_StackIsEmpty( void );
@@ -52,11 +52,6 @@ public:
 	virtual void			FPU_SetDAZ( bool enable );
 
 	virtual void			FPU_EnableExceptions( int exceptions );
-
-	virtual void			GetCallStack( address_t *callStack, const int callStackSize );
-	virtual const char *	GetCallStackStr( const address_t *callStack, const int callStackSize );
-	virtual const char *	GetCallStackCurStr( int depth );
-	virtual void			ShutdownSymbols( void );
 
 	virtual bool			LockMemory( void *ptr, int bytes );
 	virtual bool			UnlockMemory( void *ptr, int bytes );
