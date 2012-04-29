@@ -321,11 +321,7 @@ void idSessionLocal::SetMainMenuGuiVars( void ) {
 
 	guiMsg->SetStateString( "visible_hasxp", fileSystem->HasD3XP() ? "1" : "0" );
 
-#if defined( __unix__ )
-	guiMainMenu->SetStateString( "driver_prompt", "1" );
-#else
 	guiMainMenu->SetStateString( "driver_prompt", "0" );
-#endif
 
 	SetPbMenuGuiVars();
 }
@@ -888,11 +884,6 @@ void idSessionLocal::HandleMainMenuCommands( const char *menuCommand ) {
 				if ( cvarSystem->GetCVarBool( "s_useEAXReverb" ) ) {
 					int eax = soundSystem->IsEAXAvailable();
 					switch ( eax ) {
-					case 2:
-						cvarSystem->SetCVarBool( "s_useOpenAL", false );
-						// OpenAL subsystem load failed
-						MessageBox( MSG_OK, common->GetLanguageDict()->GetString( "#str_07238" ), common->GetLanguageDict()->GetString( "#str_07231" ), true );
-						break;
 					case 1:
 						// when you restart
 						MessageBox( MSG_OK, common->GetLanguageDict()->GetString( "#str_04137" ), common->GetLanguageDict()->GetString( "#str_07231" ), true );
