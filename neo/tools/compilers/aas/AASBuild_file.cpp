@@ -26,10 +26,9 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "../../../idlib/precompiled.h"
-#pragma hdrstop
+#include "sys/platform.h"
 
-#include "AASBuild_local.h"
+#include "tools/compilers/aas/AASBuild_local.h"
 
 #define VERTEX_HASH_BOXSIZE				(1<<6)	// must be power of 2
 #define VERTEX_HASH_SIZE				(VERTEX_HASH_BOXSIZE*VERTEX_HASH_BOXSIZE)
@@ -303,6 +302,9 @@ bool idAASBuild::GetAreaForLeafNode( idBrushBSPNode *node, int *areaNum ) {
 	area.numFaces = 0;
 	area.reach = NULL;
 	area.rev_reach = NULL;
+	area.bounds.Zero();
+	area.center.Zero();
+	area.travelFlags = 0;
 
 	for ( p = node->GetPortals(); p; p = p->Next(s) ) {
 		s = (p->GetNode(1) == node);

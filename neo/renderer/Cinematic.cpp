@@ -26,14 +26,17 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "../idlib/precompiled.h"
-#pragma hdrstop
+#include "sys/platform.h"
 
 #include <jpeglib.h>
 
-struct jpeg_error_mgr* jpeg_doom_error(struct jpeg_error_mgr * err);
+#include "framework/FileSystem.h"
+#include "renderer/tr_local.h"
+#include "sound/sound.h"
 
-#include "tr_local.h"
+#include "renderer/Cinematic.h"
+
+struct jpeg_error_mgr* jpeg_doom_error(struct jpeg_error_mgr * err);
 
 #define CIN_system	1
 #define CIN_loop	2

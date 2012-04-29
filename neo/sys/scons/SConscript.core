@@ -41,11 +41,9 @@ renderer_string = ' \
 	RenderWorld_load.cpp \
 	RenderWorld_portals.cpp \
 	VertexCache.cpp \
-	cg_explicit.cpp \
 	draw_arb.cpp \
 	draw_arb2.cpp \
 	draw_common.cpp \
-	draw_exp_stub.cpp \
 	draw_nv10.cpp \
 	draw_nv20.cpp \
 	draw_r200.cpp \
@@ -223,7 +221,7 @@ tools_list = scons_utils.BuildList( 'tools', tools_string )
 
 core_list = framework_list + renderer_list + ui_list \
 	+ cm_list + dmap_list + renderbump_list + aas_list + roq_list \
-	+ snd_list + sys_list + tools_list + [ 'TypeInfo/TypeInfoGen.cpp' ]
+	+ snd_list + sys_list + tools_list
 
 for i in range( len( core_list ) ):
 	core_list[ i ] = '../../' + core_list[ i ]

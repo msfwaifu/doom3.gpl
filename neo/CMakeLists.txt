@@ -10,11 +10,11 @@ cmake_minimum_required(VERSION 2.6)
 # maybe add these as options:
 # BUILD_GAMEPAK
 # TARGET_MONO
-# TARGET_DEMO		-DID_DEMO_BUILD
 # SETUP
 # SDK				-D_D3SDK
 
 # don't add these as options, but document them?
+# TARGET_DEMO		there are no demo pk4s compatible to this 1.3.1 codebase
 # IDNET_HOST		-DIDNET_HOST=\\"%s\\"' % IDNET_HOST
 # DEBUG_MEMORY		-DID_DEBUG_MEMORY', '-DID_REDIRECT_NEWDELETE
 # LIBC_MALLOC		-DUSE_LIBC_MALLOC=0
@@ -119,33 +119,16 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 		add_definitions(-march=pentium3)
 	endif()
 
-	if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-		add_definitions(-g)
-		add_definitions(-D_DEBUG)
-		add_definitions(-O1)
-	elseif (CMAKE_BUILD_TYPE STREQUAL "DebugAll")
-		add_definitions(-g)
-		add_definitions(-ggdb)
-		add_definitions(-D_DEBUG)
-	elseif (CMAKE_BUILD_TYPE STREQUAL "Release")
-		add_definitions(-O3)
-		add_definitions(-ffast-math)
-		add_definitions(-fno-unsafe-math-optimizations)
-		add_definitions(-fomit-frame-pointer)
-	elseif (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-		add_definitions(-g)
-		add_definitions(-O3)
-		add_definitions(-ffast-math)
-		add_definitions(-fno-unsafe-math-optimizations)
-		add_definitions(-fomit-frame-pointer)
-	elseif (CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
-		add_definitions(-Os)
-		add_definitions(-ffast-math)
-		add_definitions(-fno-unsafe-math-optimizations)
-		add_definitions(-fomit-frame-pointer)
-	else()
-		message(FATAL_ERROR "Unknown build type")
-	endif()
+	set(CMAKE_C_FLAGS_DEBUG "-g -D_DEBUG -O1")
+	set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
+	set(CMAKE_C_FLAGS_DEBUGALL "-g -ggdb -D_DEBUG")
+	set(CMAKE_CXX_FLAGS_DEBUGALL ${CMAKE_C_FLAGS_DEBUGALL})
+	set(CMAKE_C_FLAGS_RELEASE "-O3 -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer")
+	set(CMAKE_CXX_FLAGS_RELEASE ${CMAKE_C_FLAGS_RELEASE})
+	set(CMAKE_C_FLAGS_RELWITHDEBINFO "-g -O3 -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer")
+	set(CMAKE_CXX_FLAGS_RELWITHDEBINFO ${CMAKE_C_FLAGS_RELWITHDEBINFO})
+	set(CMAKE_C_FLAGS_MINSIZEREL "-Os -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer")
+	set(CMAKE_CXX_FLAGS_MINSIZEREL ${CMAKE_C_FLAGS_MINSIZEREL})
 
 	add_definitions(-fno-strict-aliasing)
 
@@ -153,8 +136,6 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 	if (cc_has_fvisibility)
 		add_definitions(-fvisibility=hidden)
 	endif()
-
-	add_definitions(-Wno-unknown-pragmas)
 
 	# TODO fix these warnings
 	add_definitions(-Wno-sign-compare)
@@ -201,7 +182,9 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 			set(ldflags ${ldflags} "-m32")
 		endif()
 
-		if (NOT MINGW)
+		if (MINGW)
+			set(ldflags ${ldflags} "-mwindows")
+		else()
 			set(sys_libs ${sys_libs} pthread)
 		endif()
 
@@ -263,11 +246,9 @@ set(src_renderer
 	renderer/RenderWorld_load.cpp
 	renderer/RenderWorld_portals.cpp
 	renderer/VertexCache.cpp
-	renderer/cg_explicit.cpp
 	renderer/draw_arb.cpp
 	renderer/draw_arb2.cpp
 	renderer/draw_common.cpp
-	renderer/draw_exp_stub.cpp
 	renderer/draw_nv10.cpp
 	renderer/draw_nv20.cpp
 	renderer/draw_r200.cpp
@@ -412,10 +393,6 @@ set(src_ui
 
 set(src_tools
 	tools/guied/GEWindowWrapper_stub.cpp
-)
-
-set(src_typeinfo
-	TypeInfo/TypeInfoGen.cpp
 )
 
 set(src_idlib
@@ -626,8 +603,6 @@ set(src_core
 	${src_snd}
 	${src_ui}
 	${src_tools}
-	${src_typeinfo}
-	${src_idlib}
 )
 
 set(src_stub_openal		sys/stub/openal_stub.cpp)
@@ -698,6 +673,11 @@ endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
+add_library(idlib${cpu} STATIC ${src_idlib})
+if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang" AND NOT MINGW)
+	set_target_properties(idlib${cpu} PROPERTIES COMPILE_FLAGS "-fPIC")
+endif()
+
 if (CORE)
 	add_executable(doom3.${cpu}
 		${src_core}
@@ -708,6 +688,7 @@ if (CORE)
 	set_target_properties(doom3.${cpu} PROPERTIES COMPILE_DEFINITIONS "__DOOM_DLL__")
 	set_target_properties(doom3.${cpu} PROPERTIES LINK_FLAGS "${ldflags}")
 	target_link_libraries(doom3.${cpu}
+		idlib${cpu}
 		${X11_X11_LIB} ${X11_Xext_LIB} ${Xxf86vm}
 		${OPENGL_gl_LIBRARY}
 		${OPENAL_LIBRARY}
@@ -734,6 +715,7 @@ if (DEDICATED)
 	set_target_properties(doom3ded.${cpu} PROPERTIES COMPILE_DEFINITIONS "ID_DEDICATED;__DOOM_DLL__")
 	set_target_properties(doom3ded.${cpu} PROPERTIES LINK_FLAGS "${ldflags}")
 	target_link_libraries(doom3ded.${cpu}
+		idlib${cpu}
 		${VORBISFILE_LIBRARIES}
 		${VORBIS_LIBRARIES}
 		${CURL_LIBRARY}
@@ -744,19 +726,21 @@ if (DEDICATED)
 endif()
 
 if (GAME)
-	add_library(game${cpu} SHARED ${src_game} ${src_idlib})
+	add_library(game${cpu} SHARED ${src_game})
 	set_target_properties(game${cpu} PROPERTIES PREFIX "")
 	set_target_properties(game${cpu} PROPERTIES COMPILE_DEFINITIONS "GAME_DLL")
+	set_target_properties(game${cpu} PROPERTIES COMPILE_FLAGS "-I${CMAKE_CURRENT_SOURCE_DIR}/game")
 	set_target_properties(game${cpu} PROPERTIES LINK_FLAGS "${ldflags}")
 	set_target_properties(game${cpu} PROPERTIES INSTALL_NAME_DIR "@executable_path")
-	target_link_libraries(game${cpu} ${ZLIB_LIBRARY})
+	target_link_libraries(game${cpu} idlib${cpu} ${ZLIB_LIBRARY})
 endif()
 
 if (D3XP)
-	add_library(game${cpu}-d3xp SHARED ${src_d3xp} ${src_idlib})
+	add_library(game${cpu}-d3xp SHARED ${src_d3xp})
 	set_target_properties(game${cpu}-d3xp PROPERTIES PREFIX "")
 	set_target_properties(game${cpu}-d3xp PROPERTIES COMPILE_DEFINITIONS "GAME_DLL;_D3XP;CTF")
+	set_target_properties(game${cpu}-d3xp PROPERTIES COMPILE_FLAGS "-I${CMAKE_CURRENT_SOURCE_DIR}/d3xp")
 	set_target_properties(game${cpu}-d3xp PROPERTIES LINK_FLAGS "${ldflags}")
 	set_target_properties(game${cpu}-d3xp PROPERTIES INSTALL_NAME_DIR "@executable_path")
-	target_link_libraries(game${cpu}-d3xp ${ZLIB_LIBRARY})
+	target_link_libraries(game${cpu}-d3xp idlib${cpu} ${ZLIB_LIBRARY})
 endif()

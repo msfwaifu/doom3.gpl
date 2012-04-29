@@ -29,25 +29,21 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __GAME_LOCAL_H__
 #define	__GAME_LOCAL_H__
 
-/*
-===============================================================================
+#include "GameBase.h"
 
-	Local implementation of the public game interface.
+#include "idlib/containers/StrList.h"
+#include "idlib/containers/LinkList.h"
+#include "idlib/BitMsg.h"
+#include "framework/Game.h"
 
-===============================================================================
-*/
-
-#define LAGO_IMG_WIDTH 64
-#define LAGO_IMG_HEIGHT 64
-#define LAGO_WIDTH	64
-#define LAGO_HEIGHT	44
-#define LAGO_MATERIAL	"textures/sfx/lagometer"
-#define LAGO_IMAGE		"textures/sfx/lagometer.tga"
-
-// if set to 1 the server sends the client PVS with snapshots and the client compares against what it sees
-#ifndef ASYNC_WRITE_PVS
-	#define ASYNC_WRITE_PVS 0
-#endif
+#include "gamesys/SaveGame.h"
+#include "physics/Clip.h"
+#include "physics/Push.h"
+#include "script/Script_Program.h"
+#include "ai/AAS.h"
+#include "anim/Anim.h"
+#include "Pvs.h"
+#include "MultiplayerGame.h"
 
 #ifdef ID_DEBUG_UNINITIALIZED_MEMORY
 // This is real evil but allows the code to inspect arbitrary class variables.
@@ -55,11 +51,20 @@ If you have questions concerning this license or the applicable additional terms
 #define protected	public
 #endif
 
+/*
+===============================================================================
+
+	Local implementation of the public game interface.
+
+===============================================================================
+*/
+class idDeclEntityDef;
+class idRenderWorld;
+class idSoundWorld;
+class idUserInterface;
+
 extern idRenderWorld *				gameRenderWorld;
 extern idSoundWorld *				gameSoundWorld;
-
-// the "gameversion" client command will print this plus compile date
-#define	GAME_VERSION		"baseDOOM-1"
 
 // classes used by idGameLocal
 class idEntity;
@@ -68,54 +73,29 @@ class idPlayer;
 class idCamera;
 class idWorldspawn;
 class idTestModel;
-class idAAS;
-class idAI;
 class idSmokeParticles;
 class idEntityFx;
 class idTypeInfo;
-class idProgram;
 class idThread;
 class idEditEntities;
 class idLocationEntity;
 
-#define	MAX_CLIENTS				32
-#define	GENTITYNUM_BITS			12
-#define	MAX_GENTITIES			(1<<GENTITYNUM_BITS)
-#define	ENTITYNUM_NONE			(MAX_GENTITIES-1)
-#define	ENTITYNUM_WORLD			(MAX_GENTITIES-2)
-#define	ENTITYNUM_MAX_NORMAL	(MAX_GENTITIES-2)
-
 //============================================================================
+extern const int NUM_RENDER_PORTAL_BITS;
 
 void gameError( const char *fmt, ... );
 
-#include "gamesys/Event.h"
-#include "gamesys/Class.h"
-#include "gamesys/SysCvar.h"
-#include "gamesys/SysCmds.h"
-#include "gamesys/SaveGame.h"
-#include "gamesys/DebugGraph.h"
-
-#include "script/Script_Program.h"
-
-#include "anim/Anim.h"
-
-#include "ai/AAS.h"
-
-#include "physics/Clip.h"
-#include "physics/Push.h"
-
-#include "Pvs.h"
-#include "MultiplayerGame.h"
-
-//============================================================================
-
-#define MAX_GAME_MESSAGE_SIZE	8192
-#define MAX_ENTITY_STATE_SIZE	512
-#define ENTITY_PVS_SIZE			((MAX_GENTITIES+31)>>5)
+extern idRenderWorld *				gameRenderWorld;
+extern idSoundWorld *				gameSoundWorld;
 
 extern const int NUM_RENDER_PORTAL_BITS;
+/*
+===============================================================================
 
+	Local implementation of the public game interface.
+
+===============================================================================
+*/
 typedef struct entityState_s {
 	int						entityNumber;
 	idBitMsg				state;
@@ -563,21 +543,28 @@ private:
 	void					DumpOggSounds( void );
 	void					GetShakeSounds( const idDict *dict );
 
-	void					SelectTimeGroup( int timeGroup );
-	int						GetTimeGroupTime( int timeGroup );
-	void					GetBestGameType( const char* map, const char* gametype, char buf[ MAX_STRING_CHARS ] );
+	virtual void			SelectTimeGroup( int timeGroup );
+	virtual int				GetTimeGroupTime( int timeGroup );
+	virtual void			GetBestGameType( const char* map, const char* gametype, char buf[ MAX_STRING_CHARS ] );
 
 	void					Tokenize( idStrList &out, const char *in );
 
 	void					UpdateLagometer( int aheadOfServer, int dupeUsercmds );
 
-	void					GetMapLoadingGUI( char gui[ MAX_STRING_CHARS ] );
+	virtual void			GetMapLoadingGUI( char gui[ MAX_STRING_CHARS ] );
 };
 
 //============================================================================
 
 extern idGameLocal			gameLocal;
 extern idAnimManager		animationLib;
+
+//============================================================================
+
+class idGameError : public idException {
+public:
+	idGameError( const char *text ) : idException( text ) {}
+};
 
 //============================================================================
 
@@ -641,14 +628,6 @@ ID_INLINE int idEntityPtr<type>::GetEntityNum( void ) const {
 
 //============================================================================
 
-class idGameError : public idException {
-public:
-	idGameError( const char *text ) : idException( text ) {}
-};
-
-//============================================================================
-
-
 //
 // these defines work for all startsounds from all entity types
 // make sure to change script/doom_defs.script if you add any channels, or change their order
@@ -672,72 +651,8 @@ typedef enum {
 	SND_CHANNEL_DAMAGE
 } gameSoundChannel_t;
 
-// content masks
-#define	MASK_ALL					(-1)
-#define	MASK_SOLID					(CONTENTS_SOLID)
-#define	MASK_MONSTERSOLID			(CONTENTS_SOLID|CONTENTS_MONSTERCLIP|CONTENTS_BODY)
-#define	MASK_PLAYERSOLID			(CONTENTS_SOLID|CONTENTS_PLAYERCLIP|CONTENTS_BODY)
-#define	MASK_DEADSOLID				(CONTENTS_SOLID|CONTENTS_PLAYERCLIP)
-#define	MASK_WATER					(CONTENTS_WATER)
-#define	MASK_OPAQUE					(CONTENTS_OPAQUE)
-#define	MASK_SHOT_RENDERMODEL		(CONTENTS_SOLID|CONTENTS_RENDERMODEL)
-#define	MASK_SHOT_BOUNDINGBOX		(CONTENTS_SOLID|CONTENTS_BODY)
-
-#define DEFAULT_GRAVITY_STRING		"1066"
 extern const float	DEFAULT_GRAVITY;
 extern const idVec3	DEFAULT_GRAVITY_VEC3;
 extern const int	CINEMATIC_SKIP_DELAY;
-
-//============================================================================
-
-#include "physics/Force.h"
-#include "physics/Force_Constant.h"
-#include "physics/Force_Drag.h"
-#include "physics/Force_Field.h"
-#include "physics/Force_Spring.h"
-#include "physics/Physics.h"
-#include "physics/Physics_Static.h"
-#include "physics/Physics_StaticMulti.h"
-#include "physics/Physics_Base.h"
-#include "physics/Physics_Actor.h"
-#include "physics/Physics_Monster.h"
-#include "physics/Physics_Player.h"
-#include "physics/Physics_Parametric.h"
-#include "physics/Physics_RigidBody.h"
-#include "physics/Physics_AF.h"
-
-#include "SmokeParticles.h"
-
-#include "Entity.h"
-#include "GameEdit.h"
-#include "AF.h"
-#include "IK.h"
-#include "AFEntity.h"
-#include "Misc.h"
-#include "Actor.h"
-#include "Projectile.h"
-#include "Weapon.h"
-#include "Light.h"
-#include "WorldSpawn.h"
-#include "Item.h"
-#include "PlayerView.h"
-#include "PlayerIcon.h"
-#include "Player.h"
-#include "Mover.h"
-#include "Camera.h"
-#include "Moveable.h"
-#include "Target.h"
-#include "Trigger.h"
-#include "Sound.h"
-#include "Fx.h"
-#include "SecurityCamera.h"
-#include "BrittleFracture.h"
-
-#include "ai/AI.h"
-#include "anim/Anim_Testmodel.h"
-
-#include "script/Script_Compiler.h"
-#include "script/Script_Interpreter.h"
-#include "script/Script_Thread.h"
 
 #endif	/* !__GAME_LOCAL_H__ */

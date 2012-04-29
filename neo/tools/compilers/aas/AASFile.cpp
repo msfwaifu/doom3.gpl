@@ -26,12 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "../../../idlib/precompiled.h"
-#pragma hdrstop
+#include "sys/platform.h"
+#include "framework/FileSystem.h"
+#include "framework/DeclEntityDef.h"
 
-#include "AASFile.h"
-#include "AASFile_local.h"
-
+#include "tools/compilers/aas/AASFile_local.h"
 
 /*
 ===============================================================================
@@ -974,6 +973,11 @@ bool idAASFileLocal::ParseAreas( idLexer &src ) {
 		area.numFaces = src.ParseInt();
 		area.cluster = src.ParseInt();
 		area.clusterAreaNum = src.ParseInt();
+		area.reach = NULL;
+		area.rev_reach = NULL;
+		area.bounds.Zero();
+		area.center.Zero();
+		area.travelFlags = 0;
 		src.ExpectTokenString( ")" );
 		areas.Append( area );
 		ParseReachabilities( src, i );

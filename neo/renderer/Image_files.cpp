@@ -26,10 +26,13 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "../idlib/precompiled.h"
-#pragma hdrstop
+#include "sys/platform.h"
 
-#include "tr_local.h"
+#include <jpeglib.h>
+
+#include "renderer/tr_local.h"
+
+#include "renderer/Image.h"
 
 /*
 
@@ -46,8 +49,6 @@ void R_LoadImage( const char *name, byte **pic, int *width, int *height, bool ma
  * (stdio.h is sufficient on ANSI-conforming systems.)
  * You may also wish to include "jerror.h".
  */
-
-#include <jpeglib.h>
 
 void jpeg_memory_src (j_decompress_ptr cinfo, byte *infile, int size);
 

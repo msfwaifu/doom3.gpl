@@ -26,13 +26,16 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "../idlib/precompiled.h"
-#pragma hdrstop
+#include "sys/platform.h"
+#include "idlib/math/Interpolate.h"
+#include "framework/Game.h"
+#include "renderer/VertexCache.h"
+#include "renderer/RenderWorld_local.h"
+#include "ui/Window.h"
 
-#include "tr_local.h"
+#include "renderer/tr_local.h"
 
 static const float CHECK_BOUNDS_EPSILON = 1.0f;
-
 
 /*
 ===========================================================================================
@@ -1060,8 +1063,9 @@ R_IssueEntityDefCallback
 bool R_IssueEntityDefCallback( idRenderEntityLocal *def ) {
 	bool update;
 	idBounds	oldBounds;
+	const bool checkBounds = r_checkBounds.GetBool();
 
-	if ( r_checkBounds.GetBool() ) {
+	if ( checkBounds ) {
 		oldBounds = def->referenceBounds;
 	}
 
@@ -1075,9 +1079,10 @@ bool R_IssueEntityDefCallback( idRenderEntityLocal *def ) {
 
 	if ( !def->parms.hModel ) {
 		common->Error( "R_IssueEntityDefCallback: dynamic entity callback didn't set model" );
+		return false;
 	}
 
-	if ( r_checkBounds.GetBool() ) {
+	if ( checkBounds ) {
 		if (	oldBounds[0][0] > def->referenceBounds[0][0] + CHECK_BOUNDS_EPSILON ||
 				oldBounds[0][1] > def->referenceBounds[0][1] + CHECK_BOUNDS_EPSILON ||
 				oldBounds[0][2] > def->referenceBounds[0][2] + CHECK_BOUNDS_EPSILON ||

@@ -26,21 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "../idlib/precompiled.h"
-#pragma hdrstop
+#include "sys/platform.h"
+#include "renderer/VertexCache.h"
 
-#include "tr_local.h"
-
-#include "cg_explicit.h"
-
-CGcontext cg_context;
-
-#if 0
-static void cg_error_callback( void ) {
-	CGerror i = cgGetError();
-	common->Printf( "Cg error (%d): %s\n", i, cgGetErrorString(i) );
-}
-#endif
+#include "renderer/tr_local.h"
 
 /*
 =========================================================================================

@@ -29,6 +29,8 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __CONSOLE_H__
 #define __CONSOLE_H__
 
+#include "framework/Session.h"
+
 /*
 ===============================================================================
 
@@ -52,7 +54,7 @@ public:
 	// can't be combined with Init, because Init happens before renderer is started
 	virtual void	LoadGraphics() = 0;
 
-	virtual bool	ProcessEvent( const struct sysEvent_s *event, bool forceAccept ) = 0;
+	virtual bool	ProcessEvent( const sysEvent_t *event, bool forceAccept ) = 0;
 
 	// the system code can release the mouse pointer when the console is active
 	virtual bool	Active( void ) = 0;

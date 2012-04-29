@@ -26,10 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "../../../idlib/precompiled.h"
-#pragma hdrstop
+#include "sys/platform.h"
+#include "renderer/ModelManager.h"
 
-#include "dmap.h"
+#include "tools/compilers/dmap/dmap.h"
 
 /*
 
@@ -316,6 +316,8 @@ static mapTri_t *FixTriangleAgainstHashVert( const mapTri_t *a, const hashVert_t
 	if ( a->hashVert[0] == hv || a->hashVert[1] == hv || a->hashVert[2] == hv ) {
 		return NULL;
 	}
+
+	split.Clear();
 
 	// we probably should find the edge that the vertex is closest to.
 	// it is possible to be < 1 unit away from multiple

@@ -29,6 +29,20 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __GAME_H__
 #define __GAME_H__
 
+#include "idlib/BitMsg.h"
+#include "idlib/Dict.h"
+#include "framework/UsercmdGen.h"
+#include "renderer/RenderWorld.h"
+#include "sound/sound.h"
+
+class idAASFileManager;
+class idCollisionModelManager;
+class idRenderSystem;
+class idRenderModelManager;
+class idUserInterface;
+class idUserInterfaceManager;
+class idNetworkSystem;
+
 /*
 ===============================================================================
 
@@ -36,11 +50,6 @@ If you have questions concerning this license or the applicable additional terms
 
 ===============================================================================
 */
-
-// default scripts
-#define SCRIPT_DEFAULTDEFS			"script/doom_defs.script"
-#define SCRIPT_DEFAULT				"script/doom_main.script"
-#define SCRIPT_DEFAULTFUNC			"doom_main"
 
 typedef struct {
 	char		sessionCommand[MAX_STRING_CHARS];	// "map", "disconnect", "victory", etc
@@ -65,9 +74,6 @@ typedef enum {
 	ESC_MAIN,		// start main menu GUI
 	ESC_GUI			// set an explicit GUI
 } escReply_t;
-
-#define TIME_GROUP1		0
-#define TIME_GROUP2		1
 
 class idGame {
 public:

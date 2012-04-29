@@ -28,11 +28,11 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __roq_h__
 #define __roq_h__
 
-#include "gdefs.h"
-#include "roqParam.h"
-#include "quaddefs.h"
 #include <jpeglib.h>
-#pragma once
+
+#include "tools/compilers/roqvq/gdefs.h"
+#include "tools/compilers/roqvq/roqParam.h"
+#include "tools/compilers/roqvq/quaddefs.h"
 
 class codec;
 class roqParam;
