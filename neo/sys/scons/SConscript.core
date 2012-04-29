@@ -10,6 +10,7 @@ Import( 'GLOBALS' )
 Import( GLOBALS )
 
 renderer_string = ' \
+	jpeg_memory_src.cpp \
 	Cinematic.cpp \
 	GuiModel.cpp \
 	Image_files.cpp \
@@ -203,10 +204,8 @@ sys_string = ' \
 
 if ( local_dedicated == 0 ):
 	sys_string += ' \
-		linux/glimp.cpp \
-		posix/posix_input.cpp \
-		linux/input.cpp \
-		linux/libXNVCtrl/NVCtrl.c'
+		glimp.cpp \
+		events.cpp'
 else:
 	sys_string += ' \
 		stub/stub_gl.cpp \
@@ -252,8 +251,6 @@ if (g_os == "Linux"):
 if ( local_curl == 1 ):
 	local_env.Append( LIBS = [ 'curl' ] )
 if ( local_dedicated == 0 ):
-	local_env.Append( LIBS = [ 'X11', 'Xext', 'Xxf86vm' ] ) # 'Xxf86dga',
-	local_env.Append( LIBPATH = [ '/usr/X11R6/lib' ] )
 	local_env.Append( LIBS = [ 'openal' ] )
 
 source_list = core_list

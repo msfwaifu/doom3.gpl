@@ -49,10 +49,9 @@ If you have questions concerning this license or the applicable additional terms
 
 glconfig_t	glConfig;
 
-const char *r_rendererArgs[] = { "best", "arb", "arb2", "Cg", "exp", "nv10", "nv20", "r200", NULL };
+const char *r_rendererArgs[] = { "best", "arb", "arb2", "nv10", "nv20", "r200", NULL };
 
 idCVar r_inhibitFragmentProgram( "r_inhibitFragmentProgram", "0", CVAR_RENDERER | CVAR_BOOL, "ignore the fragment program extension" );
-idCVar r_glDriver( "r_glDriver", "", CVAR_RENDERER, "\"opengl32\", etc." );
 idCVar r_useLightPortalFlow( "r_useLightPortalFlow", "1", CVAR_RENDERER | CVAR_BOOL, "use a more precise area reference determination" );
 idCVar r_multiSamples( "r_multiSamples", "0", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "number of antialiasing samples" );
 idCVar r_mode( "r_mode", "3", CVAR_ARCHIVE | CVAR_RENDERER | CVAR_INTEGER, "video mode number" );
@@ -132,7 +131,6 @@ idCVar r_useInteractionCulling( "r_useInteractionCulling", "1", CVAR_RENDERER | 
 idCVar r_useInteractionScissors( "r_useInteractionScissors", "2", CVAR_RENDERER | CVAR_INTEGER, "1 = use a custom scissor rectangle for each shadow interaction, 2 = also crop using portal scissors", -2, 2, idCmdSystem::ArgCompletion_Integer<-2,2> );
 idCVar r_useShadowCulling( "r_useShadowCulling", "1", CVAR_RENDERER | CVAR_BOOL, "try to cull shadows from partially visible lights" );
 idCVar r_useFrustumFarDistance( "r_useFrustumFarDistance", "0", CVAR_RENDERER | CVAR_FLOAT, "if != 0 force the view frustum far distance to this distance" );
-idCVar r_logFile( "r_logFile", "0", CVAR_RENDERER | CVAR_INTEGER, "number of frames to emit GL logs" );
 idCVar r_clear( "r_clear", "2", CVAR_RENDERER, "force screen clear every frame, 1 = purple, 2 = black, 'r g b' = custom" );
 idCVar r_offsetFactor( "r_offsetfactor", "0", CVAR_RENDERER | CVAR_FLOAT, "polygon offset parameter" );
 idCVar r_offsetUnits( "r_offsetunits", "-600", CVAR_RENDERER | CVAR_FLOAT, "polygon offset parameter" );
@@ -215,9 +213,6 @@ idCVar r_useEntityCallbacks( "r_useEntityCallbacks", "1", CVAR_RENDERER | CVAR_B
 idCVar r_showSkel( "r_showSkel", "0", CVAR_RENDERER | CVAR_INTEGER, "draw the skeleton when model animates, 1 = draw model with skeleton, 2 = draw skeleton only", 0, 2, idCmdSystem::ArgCompletion_Integer<0,2> );
 idCVar r_jointNameScale( "r_jointNameScale", "0.02", CVAR_RENDERER | CVAR_FLOAT, "size of joint names when r_showskel is set to 1" );
 idCVar r_jointNameOffset( "r_jointNameOffset", "0.5", CVAR_RENDERER | CVAR_FLOAT, "offset of joint names when r_showskel is set to 1" );
-
-idCVar r_cgVertexProfile( "r_cgVertexProfile", "best", CVAR_RENDERER | CVAR_ARCHIVE, "arbvp1, vp20, vp30" );
-idCVar r_cgFragmentProfile( "r_cgFragmentProfile", "best", CVAR_RENDERER | CVAR_ARCHIVE, "arbfp1, fp30" );
 
 idCVar r_debugLineDepthTest( "r_debugLineDepthTest", "0", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "perform depth test on debug lines" );
 idCVar r_debugLineWidth( "r_debugLineWidth", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "width of debug lines" );
@@ -573,11 +568,7 @@ vidmode_t r_vidModes[] = {
 };
 static int	s_numVidModes = ( sizeof( r_vidModes ) / sizeof( r_vidModes[0] ) );
 
-#if MACOS_X
-bool R_GetModeInfo( int *width, int *height, int mode ) {
-#else
 static bool R_GetModeInfo( int *width, int *height, int mode ) {
-#endif
 	vidmode_t	*vm;
 
 	if ( mode < -1 ) {
@@ -1838,18 +1829,6 @@ static void GfxInfo_f( const idCmdArgs &args ) {
 		common->Printf( "glFinish not forced\n" );
 	}
 
-#ifdef _WIN32
-// WGL_EXT_swap_interval
-typedef BOOL (WINAPI * PFNWGLSWAPINTERVALEXTPROC) (int interval);
-extern	PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT;
-
-	if ( r_swapInterval.GetInteger() && wglSwapIntervalEXT ) {
-		common->Printf( "Forcing swapInterval %i\n", r_swapInterval.GetInteger() );
-	} else {
-		common->Printf( "swapInterval not forced\n" );
-	}
-#endif
-
 	bool tss = glConfig.twoSidedStencilAvailable || glConfig.atiTwoSidedStencilAvailable;
 
 	if ( !r_useTwoSidedStencil.GetBool() && tss ) {
@@ -2103,7 +2082,6 @@ void idRenderSystemLocal::Clear( void ) {
 	memset( &pc, 0, sizeof( pc ) );
 	memset( &lockSurfacesCmd, 0, sizeof( lockSurfacesCmd ) );
 	memset( &identitySpace, 0, sizeof( identitySpace ) );
-	logFile = NULL;
 	stencilIncr = 0;
 	stencilDecr = 0;
 	memset( renderCrops, 0, sizeof( renderCrops ) );
@@ -2191,13 +2169,6 @@ void idRenderSystemLocal::Shutdown( void ) {
 	idCinematic::ShutdownCinematic( );
 
 	globalImages->Shutdown();
-
-	// close the r_logFile
-	if ( logFile ) {
-		fprintf( logFile, "*** CLOSING LOG ***\n" );
-		fclose( logFile );
-		logFile = 0;
-	}
 
 	// free frame memory
 	R_ShutdownFrameData();

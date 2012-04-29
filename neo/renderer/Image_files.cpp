@@ -28,9 +28,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "sys/platform.h"
 
-#include <jpeglib.h>
-#include <jerror.h>
-
+#include "renderer/jpeg_memory_src.h"
 #include "renderer/tr_local.h"
 
 #include "renderer/Image.h"
@@ -50,8 +48,6 @@ void R_LoadImage( const char *name, byte **pic, int *width, int *height, bool ma
  * (stdio.h is sufficient on ANSI-conforming systems.)
  * You may also wish to include "jerror.h".
  */
-
-void jpeg_memory_src (j_decompress_ptr cinfo, byte *infile, int size);
 
 static void my_error_exit(j_common_ptr cinfo)
 {
@@ -794,15 +790,6 @@ static void LoadTGA( const char *name, byte **pic, int *width, int *height, ID_T
 }
 
 /*
-=========================================================
-
-JPG LOADING
-
-Interfaces with the huge libjpeg
-=========================================================
-*/
-
-/*
 =============
 LoadJPG
 =============
@@ -876,11 +863,7 @@ static void LoadJPG( const char *filename, unsigned char **pic, int *width, int 
 
   /* Step 2: specify data source (eg, a file) */
 
-#ifdef HAVE_JPEG_MEM_SRC
-  jpeg_mem_src(&cinfo, fbuffer, len);
-#else
   jpeg_memory_src(&cinfo, fbuffer, len);
-#endif
 
   /* Step 3: read file parameters with jpeg_read_header() */
 

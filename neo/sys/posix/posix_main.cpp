@@ -224,82 +224,6 @@ int Sys_ListFiles( const char *directory, const char *extension, idStrList &list
 }
 
 /*
-============================================================================
-EVENT LOOP
-============================================================================
-*/
-
-#define	MAX_QUED_EVENTS		256
-#define	MASK_QUED_EVENTS	( MAX_QUED_EVENTS - 1 )
-
-static sysEvent_t eventQue[MAX_QUED_EVENTS];
-static int eventHead, eventTail;
-
-/*
-================
-Posix_QueEvent
-
-ptr should either be null, or point to a block of data that can be freed later
-================
-*/
-void Posix_QueEvent( sysEventType_t type, int value, int value2,
-				  int ptrLength, void *ptr ) {
-	sysEvent_t *ev;
-
-	ev = &eventQue[eventHead & MASK_QUED_EVENTS];
-	if (eventHead - eventTail >= MAX_QUED_EVENTS) {
-		common->Printf( "Posix_QueEvent: overflow\n" );
-		// we are discarding an event, but don't leak memory
-		// TTimo: verbose dropped event types?
-		if (ev->evPtr) {
-			Mem_Free(ev->evPtr);
-			ev->evPtr = NULL;
-		}
-		eventTail++;
-	}
-
-	eventHead++;
-
-	ev->evType = type;
-	ev->evValue = value;
-	ev->evValue2 = value2;
-	ev->evPtrLength = ptrLength;
-	ev->evPtr = ptr;
-
-#if 0
-	common->Printf( "Event %d: %d %d\n", ev->evType, ev->evValue, ev->evValue2 );
-#endif
-}
-
-/*
-================
-Sys_GetEvent
-================
-*/
-sysEvent_t Sys_GetEvent(void) {
-	static sysEvent_t ev;
-
-	// return if we have data
-	if (eventHead > eventTail) {
-		eventTail++;
-		return eventQue[(eventTail - 1) & MASK_QUED_EVENTS];
-	}
-	// return the empty event with the current time
-	memset(&ev, 0, sizeof(ev));
-
-	return ev;
-}
-
-/*
-================
-Sys_ClearEvents
-================
-*/
-void Sys_ClearEvents( void ) {
-	eventHead = eventTail = 0;
-}
-
-/*
 ================
 Posix_Cwd
 ================
@@ -313,23 +237,6 @@ const char *Posix_Cwd( void ) {
 		cwd[0] = 0;
 
 	return cwd;
-}
-
-/*
-=================
-Sys_GetMemoryStatus
-=================
-*/
-void Sys_GetMemoryStatus( sysMemoryStats_t &stats ) {
-	common->Printf( "FIXME: Sys_GetMemoryStatus stub\n" );
-}
-
-void Sys_GetCurrentMemoryStatus( sysMemoryStats_t &stats ) {
-	common->Printf( "FIXME: Sys_GetCurrentMemoryStatus\n" );
-}
-
-void Sys_GetExeLaunchMemoryStatus( sysMemoryStats_t &stats ) {
-	common->Printf( "FIXME: Sys_GetExeLaunchMemoryStatus\n" );
 }
 
 /*
@@ -397,11 +304,6 @@ void Sys_ShowConsole( int visLevel, bool quitOnClose ) { }
 
 // ---------------------------------------------------------------------------
 
-// only relevant when specified on command line
-const char *Sys_DefaultCDPath( void ) {
-	return "";
-}
-
 ID_TIME_T Sys_FileTimeStamp(FILE * fp) {
 	struct stat st;
 	fstat(fileno(fp), &st);
@@ -415,13 +317,6 @@ char *Sys_GetClipboardData(void) {
 
 void Sys_SetClipboardData( const char *string ) {
 	Sys_Printf( "TODO: Sys_SetClipboardData\n" );
-}
-
-
-// stub pretty much everywhere - heavy calling
-void Sys_FlushCacheMemory(void *base, int bytes)
-{
-//  Sys_Printf("Sys_FlushCacheMemory stub\n");
 }
 
 bool Sys_FPU_StackIsEmpty( void ) {
@@ -471,16 +366,6 @@ return in MegaBytes
 int Sys_GetDriveFreeSpace( const char *path ) {
 	common->DPrintf( "TODO: Sys_GetDriveFreeSpace\n" );
 	return 1000 * 1024;
-}
-
-/*
-================
-Sys_AlreadyRunning
-return true if there is a copy of D3 running already
-================
-*/
-bool Sys_AlreadyRunning( void ) {
-	return false;
 }
 
 /*
@@ -657,12 +542,12 @@ void tty_FlushIn() {
 
 /*
 ================
-Posix_ConsoleInput
+Sys_ConsoleInput
 Checks for a complete line of text typed in at the console.
 Return NULL if a complete line is not ready.
 ================
 */
-char *Posix_ConsoleInput( void ) {
+char *Sys_ConsoleInput( void ) {
 	if ( tty_enabled ) {
 		char	key;
 		bool	hidden = false;
@@ -910,24 +795,6 @@ char *Posix_ConsoleInput( void ) {
 #endif
 	}
 	return NULL;
-}
-
-/*
-called during frame loops, pacifier updates etc.
-this is only for console input polling and misc mouse grab tasks
-the actual mouse and keyboard input is in the Sys_Poll logic
-*/
-void Sys_GenerateEvents( void ) {
-	char *s;
-	if ( ( s = Posix_ConsoleInput() ) ) {
-		char *b;
-		int len;
-
-		len = strlen( s ) + 1;
-		b = (char *)Mem_Alloc( len );
-		strcpy( b, s );
-		Posix_QueEvent( SE_CONSOLE, 0, 0, len, b );
-	}
 }
 
 /*

@@ -54,9 +54,6 @@ void	Sys_CreateThread( xthread_t function, void *parms, xthreadInfo& info, const
 void Sys_DestroyThread( xthreadInfo& info ) {
 }
 
-void	Sys_FlushCacheMemory( void *base, int bytes ) {
-}
-
 void Sys_Error( const char *error, ... ) {
 	va_list		argptr;
 	char		text[4096];
@@ -120,10 +117,6 @@ sysEvent_t	Sys_GetEvent( void ) {
 }
 
 void	Sys_Mkdir( const char *path ) {
-}
-
-const char *Sys_DefaultCDPath(void) {
-	return "";
 }
 
 const char *Sys_DefaultBasePath(void) {
@@ -195,9 +188,6 @@ const char *Sys_NetAdrToString( const netadr_t a ) {
 			a.ip[0], a.ip[1], a.ip[2], a.ip[3], BigShort(a.port) );
 	}
 	return s;
-}
-
-void Sys_DoPreferences( void ) {
 }
 
 int main( int argc, char **argv ) {

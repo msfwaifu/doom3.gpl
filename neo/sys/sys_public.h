@@ -123,8 +123,6 @@ void			Sys_Shutdown( void );
 void			Sys_Error( const char *error, ...);
 void			Sys_Quit( void );
 
-bool			Sys_AlreadyRunning( void );
-
 // note that this isn't journaled...
 char *			Sys_GetClipboardData( void );
 void			Sys_SetClipboardData( const char *string );
@@ -178,10 +176,6 @@ int				Sys_GetVideoRam( void );
 // returns amount of drive space in path
 int				Sys_GetDriveFreeSpace( const char *path );
 
-// returns memory stats
-void			Sys_GetCurrentMemoryStatus( sysMemoryStats_t &stats );
-void			Sys_GetExeLaunchMemoryStatus( sysMemoryStats_t &stats );
-
 // lock and unlock memory
 bool			Sys_LockMemory( void *ptr, int bytes );
 bool			Sys_UnlockMemory( void *ptr, int bytes );
@@ -198,13 +192,13 @@ void			Sys_DLL_Unload( uintptr_t dllHandle );
 void			Sys_GenerateEvents( void );
 sysEvent_t		Sys_GetEvent( void );
 void			Sys_ClearEvents( void );
+char			*Sys_ConsoleInput( void );
 
 // input is tied to windows, so it needs to be started up and shut down whenever
 // the main window is recreated
 void			Sys_InitInput( void );
 void			Sys_ShutdownInput( void );
 void			Sys_InitScanTable( void );
-const unsigned char *Sys_GetScanTable( void );
 unsigned char	Sys_GetConsoleKey( bool shifted );
 // map a scancode key to a char
 // does nothing on win32, as SE_KEY == SE_CHAR there
@@ -235,7 +229,6 @@ void			Sys_Mkdir( const char *path );
 ID_TIME_T			Sys_FileTimeStamp( FILE *fp );
 // NOTE: do we need to guarantee the same output on all platforms?
 const char *	Sys_TimeStampToStr( ID_TIME_T timeStamp );
-const char *	Sys_DefaultCDPath( void );
 const char *	Sys_DefaultBasePath( void );
 const char *	Sys_DefaultSavePath( void );
 const char *	Sys_EXEPath( void );
@@ -246,9 +239,6 @@ int				Sys_ListFiles( const char *directory, const char *extension, idList<class
 
 // know early if we are performing a fatal error shutdown so the error message doesn't get lost
 void			Sys_SetFatalError( const char *error );
-
-// display perference dialog
-void			Sys_DoPreferences( void );
 
 /*
 ==============================================================

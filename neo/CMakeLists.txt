@@ -19,7 +19,6 @@ cmake_minimum_required(VERSION 2.6)
 # DEBUG_MEMORY		-DID_DEBUG_MEMORY', '-DID_REDIRECT_NEWDELETE
 # LIBC_MALLOC		-DUSE_LIBC_MALLOC=0
 # ID_NOLANADDRESS	-DID_NOLANADDRESS
-# ID_MCHECK			-DID_MCHECK
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/sys/cmake")
 set(CMAKE_SKIP_RPATH ON CACHE BOOL "Skip RPATH" FORCE)
@@ -55,6 +54,9 @@ if (cpu STREQUAL "x86_64" AND X86)
 	set(cpu "x86")
 endif()
 
+# game library suffix
+set(gamesuffix ${cpu})
+
 # target os
 if (APPLE)
 	set(os "macosx")
@@ -65,6 +67,19 @@ endif()
 # build type
 if (NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE "RelWithDebInfo")
+endif()
+
+# precompiled libraries from the doom3-libs repo
+if (DOOM3LIBS)
+	if (CMAKE_CROSSCOMPILING)
+		set(CMAKE_FIND_ROOT_PATH ${DOOM3LIBS})
+	else()
+		set(ENV{CMAKE_PREFIX_PATH} ${DOOM3LIBS})
+	endif()
+
+	# these are too stupid, give them a hint
+	set(ENV{OPENALDIR} ${DOOM3LIBS})
+	set(ENV{SDLDIR} ${DOOM3LIBS})
 endif()
 
 # libs
@@ -98,18 +113,6 @@ include_directories(${OPENGL_INCLUDE_DIR})
 
 find_package(SDL REQUIRED)
 include_directories(${SDL_INCLUDE_DIR})
-
-if (UNIX AND NOT APPLE)
-	find_package(X11 REQUIRED)
-	add_definitions(-DXTHREADS)
-	include_directories(${X11_INCLUDE_DIR})
-
-	if (os MATCHES ".*bsd" OR os STREQUAL "dragonfly")
-		set(Xxf86vm /usr/local/lib/libXxf86vm.so)
-	else()
-		set(Xxf86vm Xxf86vm)
-	endif()
-endif()
 
 if (CURL)
 	find_package(CURL REQUIRED)
@@ -157,38 +160,41 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 	endif()
 
 	if (APPLE)
+		# no suffix for .dylib
+		set(gamesuffix "")
+
 		add_definitions(-DMACOS_X=1)
 
 		if (cpu STREQUAL "x86_64")
 			add_definitions(-arch x86_64 -mmacosx-version-min=10.6)
-			set(ldflags ${ldflags} "-arch x86_64 -mmacosx-version-min=10.6")
+			set(ldflags "${ldflags} -arch x86_64 -mmacosx-version-min=10.6")
 		elseif (cpu STREQUAL "x86")
 			CHECK_CXX_COMPILER_FLAG("-arch i386" cxx_has_arch_i386)
 			if (cxx_has_arch_i386)
 				add_definitions(-arch i386)
-				set(ldflags ${ldflags} "-arch i386")
+				set(ldflags "${ldflags} -arch i386")
 			endif()
 
 			add_definitions(-mmacosx-version-min=10.4)
-			set(ldflags ${ldflags} "-mmacosx-version-min=10.4")
+			set(ldflags "${ldflags} -mmacosx-version-min=10.4")
 		elseif (cpu STREQUAL "ppc")
 			CHECK_CXX_COMPILER_FLAG("-arch ppc" cxx_has_arch_ppc)
 			if (cxx_has_arch_ppc)
 				add_definitions(-arch ppc)
-				set(ldflags ${ldflags} "-arch ppc")
+				set(ldflags "${ldflags} -arch ppc")
 			endif()
 
 			add_definitions(-mmacosx-version-min=10.4)
-			set(ldflags ${ldflags} "-mmacosx-version-min=10.4")
+			set(ldflags "${ldflags} -mmacosx-version-min=10.4")
 		else()
 			message(FATAL_ERROR "Unsupported CPU architecture for OSX")
 		endif()
 
-		set(sys_libs ${sys_libs} "-framework Carbon -framework Cocoa -framework OpenGL -framework OpenAL -framework IOKit")
+		set(sys_libs ${sys_libs} "-framework Carbon -framework Cocoa -framework OpenGL -framework IOKit")
 	else()
 		if (cpu STREQUAL "x86" AND X86)
 			add_definitions(-m32)
-			set(ldflags ${ldflags} "-m32")
+			set(ldflags "${ldflags} -m32")
 		endif()
 
 		if (os STREQUAL "linux")
@@ -197,6 +203,10 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 	endif()
 elseif (MSVC)
 	add_definitions(/W4)
+	add_definitions(/wd4100) # unreferenced formal parameter
+	add_definitions(/wd4127) # conditional expression is constant
+	add_definitions(/wd4244) # possible loss of data
+	add_definitions(/wd4245) # signed/unsigned mismatch
 	add_definitions(/wd4714) # 'function' marked as __forceinline not inlined
 	add_definitions(/wd4996) # 'function': was declared deprecated
 	set(CMAKE_C_FLAGS_DEBUG "-D_DEBUG /Od /Zi /MDd")
@@ -218,24 +228,16 @@ if (WIN32)
 	add_definitions(-D_WIN32_WINNT=0x0501)
 
 	set(sys_libs ${sys_libs}
-		dinput8
-		ksuser
-		dxguid
 		winmm
 		iphlpapi
 		wsock32
 	)
-
-	if (MINGW)
-		list(APPEND sys_libs dxerr8)
-	else()
-		list(APPEND sys_libs dxerr)
-	endif()
 endif()
 
 message(STATUS "Building ${CMAKE_BUILD_TYPE} for ${os}.${cpu}")
 
 set(src_renderer
+	renderer/jpeg_memory_src.cpp
 	renderer/Cinematic.cpp
 	renderer/GuiModel.cpp
 	renderer/Image_files.cpp
@@ -634,9 +636,17 @@ set(src_stub_util		sys/stub/util_stub.cpp)
 set(src_sys_dedicated	sys/linux/dedicated.cpp)
 
 if (APPLE)
+	set(OSX_RESOURCE_FILES
+			"${CMAKE_CURRENT_SOURCE_DIR}/sys/osx/Doom3.icns"
+			"${CMAKE_CURRENT_SOURCE_DIR}/sys/osx/Doom 3.rsrc"
+	)
+
+	set_source_files_properties(${OSX_RESOURCE_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+
 	set(src_sys_base
 		sys/cpu.cpp
 		sys/threads.cpp
+		sys/events.cpp
 		sys/sys_local.cpp
 		sys/posix/posix_net.cpp
 		sys/posix/posix_signal.cpp
@@ -644,33 +654,27 @@ if (APPLE)
 	)
 
 	set(src_sys_core
-		sys/posix/posix_input.cpp
-		sys/osx/PickMonitor.cpp
-		sys/osx/PreferencesDialog.cpp
-		sys/osx/macosx_guids.cpp
+		sys/glimp.cpp
+		sys/glimp_ati_fragment_shader.cpp
 		sys/osx/DOOMController.mm
-		sys/osx/macosx_event.mm
-		sys/osx/macosx_glimp.mm
 		sys/osx/macosx_misc.mm
-#		sys/osx/macosx_utils.mm
-#		sys/osx/macosx_sys.mm
+		sys/osx/SDLMain.m
+		${OSX_RESOURCE_FILES}
 	)
 elseif (WIN32)
 	set(src_sys_base
 		sys/cpu.cpp
 		sys/threads.cpp
+		sys/glimp.cpp
+		sys/events.cpp
 		sys/sys_local.cpp
 		sys/win32/win_cpu.cpp
-#		sys/win32/win_gamma.cpp
-		sys/win32/win_glimp.cpp
 		sys/win32/win_input.cpp
 		sys/win32/win_main.cpp
 		sys/win32/win_net.cpp
-		sys/win32/win_qgl.cpp
 		sys/win32/win_shared.cpp
 		sys/win32/win_syscon.cpp
-		sys/win32/win_taskkeyhook.cpp
-		sys/win32/win_wndproc.cpp
+		sys/win32/SDL_win32_main.c
 	)
 
 	set(src_sys_core
@@ -680,6 +684,7 @@ else()
 	set(src_sys_base
 		sys/cpu.cpp
 		sys/threads.cpp
+		sys/events.cpp
 		sys/sys_local.cpp
 		sys/posix/posix_net.cpp
 		sys/posix/posix_signal.cpp
@@ -689,32 +694,30 @@ else()
 
 	set(src_sys_core
 		${src_stub_util}
-		sys/posix/posix_input.cpp
-		sys/linux/glimp.cpp
-		sys/linux/input.cpp
-		sys/linux/libXNVCtrl/NVCtrl.c
+		sys/glimp.cpp
 	)
 endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-add_library(idlib${cpu} STATIC ${src_idlib})
+add_library(idlib STATIC ${src_idlib})
 if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang" AND NOT MINGW)
-	set_target_properties(idlib${cpu} PROPERTIES COMPILE_FLAGS "-fPIC")
+	set_target_properties(idlib PROPERTIES COMPILE_FLAGS "-fPIC")
 endif()
 
 if (CORE)
-	add_executable(doom3.${cpu} WIN32
+	add_executable(doom3 WIN32 MACOSX_BUNDLE
 		${src_core}
 		${src_sys_base}
 		${src_sys_core}
 	)
 
-	set_target_properties(doom3.${cpu} PROPERTIES COMPILE_DEFINITIONS "__DOOM_DLL__")
-	set_target_properties(doom3.${cpu} PROPERTIES LINK_FLAGS "${ldflags}")
-	target_link_libraries(doom3.${cpu}
-		idlib${cpu}
-		${X11_X11_LIB} ${X11_Xext_LIB} ${Xxf86vm}
+	set_target_properties(doom3 PROPERTIES COMPILE_DEFINITIONS "__DOOM_DLL__")
+	set_target_properties(doom3 PROPERTIES LINK_FLAGS "${ldflags}")
+	set_target_properties(doom3 PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/sys/osx/Info.plist)
+
+	target_link_libraries(doom3
+		idlib
 		${OPENGL_gl_LIBRARY}
 		${OPENAL_LIBRARY}
 		${OGG_LIBRARIES}
@@ -729,7 +732,7 @@ if (CORE)
 endif()
 
 if (DEDICATED)
-	add_executable(doom3ded.${cpu} WIN32
+	add_executable(doom3ded WIN32 MACOSX_BUNDLE
 		${src_core}
 		${src_stub_openal}
 		${src_stub_gl}
@@ -738,10 +741,10 @@ if (DEDICATED)
 		${src_sys_dedicated}
 	)
 
-	set_target_properties(doom3ded.${cpu} PROPERTIES COMPILE_DEFINITIONS "ID_DEDICATED;__DOOM_DLL__")
-	set_target_properties(doom3ded.${cpu} PROPERTIES LINK_FLAGS "${ldflags}")
-	target_link_libraries(doom3ded.${cpu}
-		idlib${cpu}
+	set_target_properties(doom3ded PROPERTIES COMPILE_DEFINITIONS "ID_DEDICATED;__DOOM_DLL__")
+	set_target_properties(doom3ded PROPERTIES LINK_FLAGS "${ldflags}")
+	target_link_libraries(doom3ded
+		idlib
 		${VORBISFILE_LIBRARIES}
 		${VORBIS_LIBRARIES}
 		${CURL_LIBRARY}
@@ -753,21 +756,21 @@ if (DEDICATED)
 endif()
 
 if (GAME)
-	add_library(game${cpu} SHARED ${src_game})
-	set_target_properties(game${cpu} PROPERTIES PREFIX "")
-	set_target_properties(game${cpu} PROPERTIES COMPILE_DEFINITIONS "GAME_DLL")
-	set_target_properties(game${cpu} PROPERTIES COMPILE_FLAGS "-I${CMAKE_CURRENT_SOURCE_DIR}/game")
-	set_target_properties(game${cpu} PROPERTIES LINK_FLAGS "${ldflags}")
-	set_target_properties(game${cpu} PROPERTIES INSTALL_NAME_DIR "@executable_path")
-	target_link_libraries(game${cpu} idlib${cpu} ${ZLIB_LIBRARY})
+	add_library(game${gamesuffix} SHARED ${src_game})
+	set_target_properties(game${gamesuffix} PROPERTIES PREFIX "")
+	set_target_properties(game${gamesuffix} PROPERTIES COMPILE_DEFINITIONS "GAME_DLL")
+	set_target_properties(game${gamesuffix} PROPERTIES COMPILE_FLAGS "-I${CMAKE_CURRENT_SOURCE_DIR}/game")
+	set_target_properties(game${gamesuffix} PROPERTIES LINK_FLAGS "${ldflags}")
+	set_target_properties(game${gamesuffix} PROPERTIES INSTALL_NAME_DIR "@executable_path")
+	target_link_libraries(game${gamesuffix} idlib ${ZLIB_LIBRARY})
 endif()
 
 if (D3XP)
-	add_library(game${cpu}-d3xp SHARED ${src_d3xp})
-	set_target_properties(game${cpu}-d3xp PROPERTIES PREFIX "")
-	set_target_properties(game${cpu}-d3xp PROPERTIES COMPILE_DEFINITIONS "GAME_DLL;_D3XP;CTF")
-	set_target_properties(game${cpu}-d3xp PROPERTIES COMPILE_FLAGS "-I${CMAKE_CURRENT_SOURCE_DIR}/d3xp")
-	set_target_properties(game${cpu}-d3xp PROPERTIES LINK_FLAGS "${ldflags}")
-	set_target_properties(game${cpu}-d3xp PROPERTIES INSTALL_NAME_DIR "@executable_path")
-	target_link_libraries(game${cpu}-d3xp idlib${cpu} ${ZLIB_LIBRARY})
+	add_library(d3xp${gamesuffix} SHARED ${src_d3xp})
+	set_target_properties(d3xp${gamesuffix} PROPERTIES PREFIX "")
+	set_target_properties(d3xp${gamesuffix} PROPERTIES COMPILE_DEFINITIONS "GAME_DLL;_D3XP;CTF")
+	set_target_properties(d3xp${gamesuffix} PROPERTIES COMPILE_FLAGS "-I${CMAKE_CURRENT_SOURCE_DIR}/d3xp")
+	set_target_properties(d3xp${gamesuffix} PROPERTIES LINK_FLAGS "${ldflags}")
+	set_target_properties(d3xp${gamesuffix} PROPERTIES INSTALL_NAME_DIR "@executable_path")
+	target_link_libraries(d3xp${gamesuffix} idlib ${ZLIB_LIBRARY})
 endif()
