@@ -193,10 +193,11 @@ ui_list = scons_utils.BuildList( 'ui', ui_string )
 
 sys_string = ' \
 	sys_local.cpp \
+	cpu.cpp \
+	threads.cpp \
 	posix/posix_net.cpp \
 	posix/posix_main.cpp \
 	posix/posix_signal.cpp \
-	posix/posix_threads.cpp \
 	linux/main.cpp \
 	stub/util_stub.cpp'
 
@@ -240,7 +241,7 @@ if ( local_demo == 1 ):
 if ( local_curl == 0 ):
 	local_env.Append( CPPDEFINES = [ 'ID_ENABLE_CURL=0' ] )
 
-local_env.Append( LIBS = [ 'pthread', 'z', 'vorbisfile', 'vorbis', 'ogg', 'jpeg' ] )
+local_env.Append( LIBS = [ 'SDL', 'SDLmain', 'z', 'vorbisfile', 'vorbis', 'ogg', 'jpeg' ] )
 
 if ( local_dedicated == 0 ):
 	local_env.Append( LIBS = [ 'GL' ] )

@@ -26,8 +26,6 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include <pthread.h>
-
 #include "sys/platform.h"
 #include "framework/KeyInput.h"
 #include "sys/posix/posix_public.h"
@@ -49,7 +47,7 @@ static int mwx, mwy;
 static int mx = 0, my = 0;
 
 // time mouse was last reset, we ignore the first 50ms of the mouse to allow settling of events
-static int mouse_reset_time = 0;
+static unsigned int mouse_reset_time = 0;
 #define MOUSE_RESET_DELAY 50
 
 // backup original values for pointer grab/ungrab

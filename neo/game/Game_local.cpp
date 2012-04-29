@@ -98,17 +98,7 @@ const char *idGameLocal::sufaceTypeNames[ MAX_SURFACE_TYPES ] = {
 GetGameAPI
 ============
 */
-#if __MWERKS__
-#pragma export on
-#endif
-#if __GNUC__ >= 4
-#pragma GCC visibility push(default)
-#endif
-extern "C" gameExport_t *GetGameAPI( gameImport_t *import ) {
-#if __MWERKS__
-#pragma export off
-#endif
-
+extern "C" ID_GAME_API gameExport_t *GetGameAPI( gameImport_t *import ) {
 	if ( import->version == GAME_API_VERSION ) {
 
 		// set interface pointers used by the game
@@ -140,9 +130,6 @@ extern "C" gameExport_t *GetGameAPI( gameImport_t *import ) {
 
 	return &gameExport;
 }
-#if __GNUC__ >= 4
-#pragma GCC visibility pop
-#endif
 
 /*
 ===========
@@ -2330,7 +2317,7 @@ gameReturn_t idGameLocal::RunFrame( const usercmd_t *clientCmds ) {
 
 		// display how long it took to calculate the current game frame
 		if ( g_frametime.GetBool() ) {
-			Printf( "game %d: all:%.1f th:%.1f ev:%.1f %d ents \n",
+			Printf( "game %d: all:%u th:%u ev:%u %d ents \n",
 				time, timer_think.Milliseconds() + timer_events.Milliseconds(),
 				timer_think.Milliseconds(), timer_events.Milliseconds(), num );
 		}
