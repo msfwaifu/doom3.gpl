@@ -58,6 +58,10 @@ AL_API ALboolean AL_APIENTRY alIsExtensionPresent( const ALchar* fname ) {
 	return AL_FALSE;
 }
 
+ALC_API ALboolean ALC_APIENTRY alcIsExtensionPresent( ALCdevice *device, const ALCchar* fname ) {
+	return AL_FALSE;
+}
+
 AL_API void AL_APIENTRY alBufferData( ALuint   buffer,
 									ALenum   format,
 									const ALvoid*    data,
@@ -117,6 +121,8 @@ AL_API void AL_APIENTRY alSourceQueueBuffers( ALuint sid, ALsizei numEntries, co
 
 AL_API void AL_APIENTRY alSourcei( ALuint sid, ALenum param, ALint value ) { }
 
+AL_API void AL_APIENTRY alSource3i( ALuint sid, ALenum param, ALint i1, ALint i2, ALint i3 ) { }
+
 AL_API void AL_APIENTRY alListenerf( ALenum pname, ALfloat param ) { }
 
 ALC_API ALCboolean ALC_APIENTRY alcCloseDevice( ALCdevice *dev ) { return false; }
@@ -135,3 +141,7 @@ AL_API void AL_APIENTRY alSourcef( ALuint sid, ALenum param, ALfloat value ) { }
 AL_API void AL_APIENTRY alSourceUnqueueBuffers( ALuint sid, ALsizei numEntries, ALuint *bids ) { }
 
 AL_API void AL_APIENTRY alSourcePlay( ALuint sid ) { }
+
+AL_API const ALchar * AL_APIENTRY alGetString( ALenum token ) {
+	return NULL;
+}
