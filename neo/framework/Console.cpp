@@ -37,6 +37,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "framework/EventLoop.h"
 #include "renderer/RenderSystem.h"
 #include "sound/sound.h"
+#ifdef ID_ALLOW_TOOLS
+#include "tools/edit_public.h"
+#endif
 
 #include "framework/Console.h"
 

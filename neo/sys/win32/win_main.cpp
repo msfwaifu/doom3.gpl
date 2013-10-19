@@ -52,6 +52,10 @@ If you have questions concerning this license or the applicable additional terms
 
 #include <SDL_main.h>
 
+#ifdef ID_ALLOW_TOOLS
+#include "tools/edit_public.h"
+#endif
+
 idCVar Win32Vars_t::win_outputDebugString( "win_outputDebugString", "0", CVAR_SYSTEM | CVAR_BOOL, "" );
 idCVar Win32Vars_t::win_outputEditString( "win_outputEditString", "1", CVAR_SYSTEM | CVAR_BOOL, "" );
 idCVar Win32Vars_t::win_viewlog( "win_viewlog", "0", CVAR_SYSTEM | CVAR_INTEGER, "" );

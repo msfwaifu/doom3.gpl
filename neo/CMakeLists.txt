@@ -29,6 +29,7 @@ include(CheckFunctionExists)
 option(CORE			"Build the core" ON)
 option(GAME			"Build the base game code" ON)
 option(D3XP			"Build the d3xp game code" OFF)
+option(TOOLS		"Build the tools" OFF)
 option(DEDICATED	"Build the dedicated server" OFF)
 option(X86			"Cross compile for x86 (only applicable on x86_64)" OFF)
 option(CURL			"Enable usage of libcurl for http/ftp downloads" OFF)
@@ -69,7 +70,7 @@ if (NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE "RelWithDebInfo")
 endif()
 
-# precompiled libraries from the doom3-libs repo
+# precompiled libraries from the dhewm3-libs repo
 if (DOOM3LIBS)
 	if (CMAKE_CROSSCOMPILING)
 		set(CMAKE_FIND_ROOT_PATH ${DOOM3LIBS})
@@ -209,10 +210,20 @@ elseif (MSVC)
 	add_definitions(/wd4245) # signed/unsigned mismatch
 	add_definitions(/wd4714) # 'function' marked as __forceinline not inlined
 	add_definitions(/wd4996) # 'function': was declared deprecated
-	set(CMAKE_C_FLAGS_DEBUG "-D_DEBUG /Od /Zi /MDd")
-	set(CMAKE_C_FLAGS_RELEASE "/Ox /Oy /MD")
-	set(CMAKE_C_FLAGS_RELWITHDEBINFO "/Ox /Oy /Zi /MD")
-	set(CMAKE_C_FLAGS_MINSIZEREL "/Ox /Oy /Os /MD")
+	add_definitions(-D_ALLOW_KEYWORD_MACROS) # removes error about warning C4005 from VS2012
+	set(CMAKE_C_FLAGS_DEBUG "-D_DEBUG /Od /Zi /MTd")
+	set(CMAKE_C_FLAGS_RELEASE "/Ox /Oy /MT")
+	set(CMAKE_C_FLAGS_RELWITHDEBINFO "/Ox /Oy /Zi /MT")
+	set(CMAKE_C_FLAGS_MINSIZEREL "/Ox /Oy /Os /MT")
+
+	if (TOOLS)
+		# feels like a hack but was done like this in the original solution anyway
+		# see http://support.microsoft.com/default.aspx?scid=kb;en-us;q148652
+		set(CMAKE_EXE_LINKER_FLAGS_DEBUG "nafxcwd.lib libcmtd.lib ${CMAKE_EXE_LINKER_FLAGS_DEBUG} /NODEFAULTLIB:nafxcwd.lib /NODEFAULTLIB:libcmtd.lib")
+		set(CMAKE_EXE_LINKER_FLAGS_RELEASE "nafxcw.lib libcmt.lib ${CMAKE_EXE_LINKER_FLAGS_RELEASE} /NODEFAULTLIB:nafxcw.lib /NODEFAULTLIB:libcmt.lib")
+		set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "nafxcw.lib libcmt.lib ${CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO} /NODEFAULTLIB:nafxcw.lib /NODEFAULTLIB:libcmt.lib")
+		set(CMAKE_EXE_LINKER_FLAGS_MINSIZEREL "nafxcw.lib libcmt.lib ${CMAKE_EXE_LINKER_FLAGS_MINSIZEREL} /NODEFAULTLIB:nafxcw.lib /NODEFAULTLIB:libcmt.lib")
+	endif()
 else()
 	message(FATAL_ERROR "Unsupported compiler")
 endif()
@@ -414,9 +425,176 @@ set(src_ui
 	ui/Winvar.cpp
 )
 
+if (TOOLS AND MSVC)
+
+set(src_tools
+	tools/af/DialogAF.cpp
+	tools/af/DialogAFBody.cpp
+	tools/af/DialogAFConstraint.cpp
+	tools/af/DialogAFConstraintBallAndSocket.cpp
+	tools/af/DialogAFConstraintFixed.cpp
+	tools/af/DialogAFConstraintHinge.cpp
+	tools/af/DialogAFConstraintSlider.cpp
+	tools/af/DialogAFConstraintSpring.cpp
+	tools/af/DialogAFConstraintUniversal.cpp
+	tools/af/DialogAFName.cpp
+	tools/af/DialogAFProperties.cpp
+	tools/af/DialogAFView.cpp
+	tools/comafx/CDIB.cpp
+	tools/comafx/CPathTreeCtrl.cpp
+	tools/comafx/CSyntaxRichEditCtrl.cpp
+	tools/comafx/DialogColorPicker.cpp
+	tools/comafx/DialogGoToLine.cpp
+	tools/comafx/DialogName.cpp
+	tools/comafx/StdAfx.cpp
+	tools/comafx/VectorCtl.cpp
+	tools/common/AlphaPopup.cpp
+	tools/common/ColorButton.cpp
+	tools/common/MaskEdit.cpp
+	tools/common/OpenFileDialog.cpp
+	tools/common/PropertyGrid.cpp
+	tools/common/RegistryOptions.cpp
+	tools/common/RollupPanel.cpp
+	tools/common/SpinButton.cpp
+	tools/common/PropTree/PropTree.cpp
+	tools/common/PropTree/PropTreeInfo.cpp
+	tools/common/PropTree/PropTreeItem.cpp
+	tools/common/PropTree/PropTreeItemButton.cpp
+	tools/common/PropTree/PropTreeItemCheck.cpp
+	tools/common/PropTree/PropTreeItemColor.cpp
+	tools/common/PropTree/PropTreeItemCombo.cpp
+	tools/common/PropTree/PropTreeItemEdit.cpp
+	tools/common/PropTree/PropTreeItemEditButton.cpp
+	tools/common/PropTree/PropTreeItemFileEdit.cpp
+	tools/common/PropTree/PropTreeItemStatic.cpp
+	tools/common/PropTree/PropTreeList.cpp
+	tools/common/PropTree/PropTreeView.cpp
+	tools/decl/DialogDeclBrowser.cpp
+	tools/decl/DialogDeclEditor.cpp
+	tools/decl/DialogDeclNew.cpp
+	tools/guied/GEApp.cpp
+	tools/guied/GECheckInDlg.cpp
+	tools/guied/GEDeleteModifier.cpp
+	tools/guied/GEHideModifier.cpp
+	tools/guied/GEInsertModifier.cpp
+	tools/guied/GEItemPropsDlg.cpp
+	tools/guied/GEItemScriptsDlg.cpp
+	tools/guied/GEKeyValueModifier.cpp
+	tools/guied/GEModifier.cpp
+	tools/guied/GEModifierGroup.cpp
+	tools/guied/GEModifierStack.cpp
+	tools/guied/GEMoveModifier.cpp
+	tools/guied/GENavigator.cpp
+	tools/guied/GEOptions.cpp
+	tools/guied/GEOptionsDlg.cpp
+	tools/guied/GEProperties.cpp
+	tools/guied/GEPropertyPage.cpp
+	tools/guied/GESelectionMgr.cpp
+	tools/guied/GESizeModifier.cpp
+	tools/guied/GEStateModifier.cpp
+	tools/guied/GEStatusBar.cpp
+	tools/guied/GETransformer.cpp
+	tools/guied/GEViewer.cpp
+	tools/guied/GEWindowWrapper.cpp
+	tools/guied/GEWorkspace.cpp
+	tools/guied/GEWorkspaceFile.cpp
+	tools/guied/GEZOrderModifier.cpp
+	tools/guied/guied.cpp
+	tools/sound/DialogSound.cpp
+	tools/sound/DialogSoundGroup.cpp
+	tools/materialeditor/ConsoleView.cpp
+	tools/materialeditor/FindDialog.cpp
+	tools/materialeditor/MaterialDef.cpp
+	tools/materialeditor/MaterialDoc.cpp
+	tools/materialeditor/MaterialDocManager.cpp
+	tools/materialeditor/MaterialEditor.cpp
+	tools/materialeditor/MaterialEditView.cpp
+	tools/materialeditor/MaterialModifier.cpp
+	tools/materialeditor/MaterialPreviewPropView.cpp
+	tools/materialeditor/MaterialPreviewView.cpp
+	tools/materialeditor/MaterialPropTreeView.cpp
+	tools/materialeditor/MaterialTreeView.cpp
+	tools/materialeditor/MaterialView.cpp
+	tools/materialeditor/MEMainFrame.cpp
+	tools/materialeditor/MEOptions.cpp
+	tools/materialeditor/StageView.cpp
+	tools/materialeditor/ToggleListView.cpp
+	tools/particle/DialogParticleEditor.cpp
+	tools/pda/DialogPDAEditor.cpp
+	tools/radiant/autocaulk.cpp
+	tools/radiant/CameraTargetDlg.cpp
+	tools/radiant/CamWnd.cpp
+	tools/radiant/CapDialog.cpp
+	tools/radiant/cmdlib.cpp
+	tools/radiant/CommandsDlg.cpp
+	tools/radiant/CommentsDlg.cpp
+	tools/radiant/ConsoleDlg.cpp
+	tools/radiant/CSG.CPP
+	tools/radiant/CurveDlg.cpp
+	tools/radiant/DialogInfo.cpp
+	tools/radiant/DialogTextures.cpp
+	tools/radiant/DialogThick.cpp
+	tools/radiant/DlgCamera.cpp
+	tools/radiant/DlgEvent.cpp
+	tools/radiant/DRAG.CPP
+	tools/radiant/ECLASS.CPP
+	tools/radiant/EditorBrush.cpp
+	tools/radiant/EditorBrushPrimit.cpp
+	tools/radiant/EditorEntity.cpp
+	tools/radiant/EditorMap.cpp
+	tools/radiant/EditViewDlg.cpp
+	tools/radiant/EntityDlg.cpp
+	tools/radiant/EntityListDlg.cpp
+	tools/radiant/EntKeyFindReplace.cpp
+	tools/radiant/FindTextureDlg.cpp
+	tools/radiant/GetString.cpp
+	tools/radiant/GLWidget.cpp
+	tools/radiant/InspectorDialog.cpp
+	tools/radiant/LightDlg.cpp
+	tools/radiant/MainFrm.cpp
+	tools/radiant/MapInfo.cpp
+	tools/radiant/MediaPreviewDlg.cpp
+	tools/radiant/MRU.CPP
+	tools/radiant/NewProjDlg.cpp
+	tools/radiant/NewTexWnd.cpp
+	tools/radiant/PARSE.CPP
+	tools/radiant/PatchDensityDlg.cpp
+	tools/radiant/PatchDialog.cpp
+	tools/radiant/PMESH.CPP
+	tools/radiant/PointFile.cpp
+	tools/radiant/PrefsDlg.cpp
+	tools/radiant/PreviewDlg.cpp
+	tools/radiant/PropertyList.cpp
+	tools/radiant/QE3.CPP
+	tools/radiant/Radiant.cpp
+	tools/radiant/RotateDlg.cpp
+	tools/radiant/ScaleDialog.cpp
+	tools/radiant/SELECT.CPP
+	tools/radiant/splines.cpp
+	tools/radiant/SurfaceDlg.cpp
+	tools/radiant/TabsDlg.cpp
+	tools/radiant/TearoffContainerWindow.cpp
+	tools/radiant/TextureBar.cpp
+	tools/radiant/Undo.cpp
+	tools/radiant/VERTSEL.CPP
+	tools/radiant/WaitDlg.cpp
+	tools/radiant/WaveOpen.cpp
+	tools/radiant/WIN_DLG.CPP
+	tools/radiant/WIN_QE3.CPP
+	tools/radiant/XYWnd.cpp
+	tools/radiant/Z.CPP
+	tools/radiant/ZClip.cpp
+	tools/radiant/ZWnd.cpp
+	tools/script/DialogScriptEditor.cpp
+)
+
+else()
+
 set(src_tools
 	tools/guied/GEWindowWrapper_stub.cpp
 )
+
+endif()
 
 set(src_idlib
 	idlib/bv/Bounds.cpp
@@ -677,6 +855,15 @@ elseif (WIN32)
 		sys/win32/SDL_win32_main.c
 	)
 
+	# add resources for tools
+	if (TOOLS AND MSVC)
+		set(src_sys_base
+			${src_sys_base}
+			sys/win32/rc/doom.rc
+		)
+		set_source_files_properties(sys/win32/rc/doom.rc LANGUAGE RC)
+	endif()
+
 	set(src_sys_core
 		${src_stub_util}
 	)
@@ -712,13 +899,25 @@ if (CORE)
 		${src_sys_core}
 	)
 
-	set_target_properties(doom3 PROPERTIES COMPILE_DEFINITIONS "__DOOM_DLL__")
+	if (TOOLS)
+		set_target_properties(doom3 PROPERTIES COMPILE_DEFINITIONS "__DOOM_DLL__;ID_ALLOW_TOOLS")
+		set(opengl_libs
+			${OPENGL_gl_LIBRARY}
+			${OPENGL_glu_LIBRARY}
+		)
+	else()
+		set_target_properties(doom3 PROPERTIES COMPILE_DEFINITIONS "__DOOM_DLL__")
+		set(opengl_libs
+			${OPENGL_gl_LIBRARY}
+		)
+	endif()
+
 	set_target_properties(doom3 PROPERTIES LINK_FLAGS "${ldflags}")
 	set_target_properties(doom3 PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/sys/osx/Info.plist)
 
 	target_link_libraries(doom3
 		idlib
-		${OPENGL_gl_LIBRARY}
+		${opengl_libs}
 		${OPENAL_LIBRARY}
 		${OGG_LIBRARIES}
 		${VORBISFILE_LIBRARIES}

@@ -49,7 +49,7 @@ cmake /path/to/repository/neo
 
 Using the provided Windows binaries:
 ------------------------------------
-Get a clone of the latest binaries here: https://github.com/dhewg/doom3-libs
+Get a clone of the latest binaries here: https://github.com/dhewm/dhewm3-libs
 
 There are two subfolder:
 - 32bit binaries are located in "i686-w64-mingw32"

@@ -35,7 +35,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #ifdef _WIN32
 
-#if defined(_MFC_VER) && !defined(_D3SDK) && !defined(GAME_DLL)
+#if defined(ID_ALLOW_TOOLS) && !defined(ID_DEDICATED) && !defined(GAME_DLL)
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS	// prevent auto literal to string conversion
 #include "tools/comafx/StdAfx.h"
 #endif
