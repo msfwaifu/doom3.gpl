@@ -361,15 +361,15 @@ int CCamWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 	}
 
 	// create the bitmap display lists we're making images of glyphs 0 thru 255
-	if ( !qwglUseFontBitmaps(hDC, 0, 255, g_qeglobals.d_font_list) ) {
+	if ( !wglUseFontBitmaps(hDC, 0, 255, g_qeglobals.d_font_list) ) {
 		common->Warning( "wglUseFontBitmaps failed (%d).  Trying again.", GetLastError() );
 
 		// FIXME: This is really wacky, sometimes the first call fails, but calling it again makes it work
 		//		This probably indicates there's something wrong somewhere else in the code, but I'm not sure what
-		if ( !qwglUseFontBitmaps(hDC, 0, 255, g_qeglobals.d_font_list) ) {
+		if ( !wglUseFontBitmaps(hDC, 0, 255, g_qeglobals.d_font_list) ) {
 			common->Warning( "wglUseFontBitmaps failed again (%d).  Trying outlines.", GetLastError() );
 
-			if (!qwglUseFontOutlines(hDC, 0, 255, g_qeglobals.d_font_list, 0.0f, 0.1f, WGL_FONT_LINES, NULL)) {
+			if (!wglUseFontOutlines(hDC, 0, 255, g_qeglobals.d_font_list, 0.0f, 0.1f, WGL_FONT_LINES, NULL)) {
 				common->Warning( "wglUseFontOutlines also failed (%d), no coordinate text will be visible.", GetLastError() );
 			}
 		}

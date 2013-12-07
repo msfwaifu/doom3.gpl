@@ -84,9 +84,9 @@ If you have questions concerning this license or the applicable additional terms
 //#define ID_DEMO_BUILD
 
 // don't define ID_ALLOW_TOOLS when we don't want tool code in the executable.
-#if defined( _WIN32 ) && defined(_MFC_VER) && !defined( ID_DEDICATED ) && !defined( ID_DEMO_BUILD )
-	#define	ID_ALLOW_TOOLS
-#endif
+//#if defined( _WIN32 ) && defined(_MFC_VER) && !defined( ID_DEDICATED ) && !defined( ID_DEMO_BUILD )
+//	#define	ID_ALLOW_TOOLS
+//#endif
 
 #ifndef ID_ENFORCE_KEY
 #	if !defined( ID_DEDICATED ) && !defined( ID_DEMO_BUILD )
